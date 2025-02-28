@@ -1,0 +1,52 @@
+// let redirected = false;
+
+// while (!redirected) {
+
+//     console.log('Current URL:', currentUrl);
+//     await page.goto(currentUrl, { waitUntil: 'networkidle', timeout: 80000 });
+//     if (page.url() !== currentUrl) {
+//         console.log('URL was redirected');
+//         break;
+//     }
+//     await page.waitForSelector("img", { timeout: 60000 });
+//     console.log('Wenst to the page')
+//     console.log('');
+
+
+//     const html = await page.content();
+//     const $ = cheerio.load(html);
+
+//     const firstImage = $('img').first().attr('src');
+//     const secondImage = $('img').eq(1).attr('src');
+//     if (firstImage) {
+//         imageLinks.push(firstImage);
+//         console.log('First Image:', firstImage);
+//         console.log('');
+
+
+//     }
+//     if (secondImage) {
+//         imageLinks.push(secondImage);
+//         console.log('Second Image:', secondImage);
+//         //add new line blank line for console
+//         console.log('');
+//     }
+
+//     // Increment index by 2
+//     currentIndex += 3;
+//     const nextUrl = finalUrl.replace(`img_index=${initialIndex}`, `img_index=${currentIndex}`);
+
+//     currentUrl = nextUrl;
+//     console.log('Next URL:', nextUrl);
+// }
+
+// imageLinks.forEach((element, index) => {
+//     console.log('Image URLs: ' + index + " " + element);
+//     console.log('');
+//     console.log('Finsih');
+//     return;
+
+// }
+// );
+
+// console.log('New URL:', newUrl);
