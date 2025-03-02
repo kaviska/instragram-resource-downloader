@@ -19,6 +19,7 @@ const reelHandler = async (req, res) => {
     // Wait for the video tag to appear
     await page.waitForSelector("video");
 
+    const $=cheerio.load(await page.content());
 
 
     const videoDirectLink = $("video").attr("src");
@@ -29,22 +30,7 @@ const reelHandler = async (req, res) => {
     res.json({ message: videoDirectLink });
 
 
-    // // Fetch the Blob data within the browser context
-    // const data = await page.evaluate(async (videoDirectLink) => {
-    //     const response = await fetch(videoDirectLink);
-    //     const blob = await response.blob();
-    //     const arrayBuffer = await blob.arrayBuffer();
-    //     return Array.from(new Uint8Array(arrayBuffer));
-    // }, videoDirectLink);
-
-    // // Convert the data to a Buffer and save it as a file
-    // fs.writeFileSync('video.mp4', Buffer.from(data));
-
-    // console.log('File downloaded as video.mp4');
-    // await browser.close();
-
-    // res.json({ message: 'File downloaded as video.mp4' });
-
+ 
 
 }
 const imageHandler = async (req, res) => {
@@ -59,7 +45,7 @@ const imageHandler = async (req, res) => {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 80000 });
 
         // Wait for at least one <img> to appear
-        await page.waitForSelector("img", { timeout: 60000 }); // Increase timeout to 60 seconds
+        //await page.waitForSelector("img", { timeout: 60000 }); // Increase timeout to 60 seconds
 
         // Get the HTML content
         const html = await page.content();
@@ -72,9 +58,50 @@ const imageHandler = async (req, res) => {
         const seenUrls = new Set(); // Track seen URLs to avoid duplicate logs
         const imageLinks = new Set(); // Store unique image URLs
 
+        try {
+                        
+            //check button with text content Allow All Cookies
+            const allowButton = await page.$('button:has-text(" Allow all cookies")');
+            if (allowButton) {
+                await allowButton.click();
+                console.log('Clicked the "Allow All Cookies" button');
+                await page.waitForTimeout(1000); // Small delay for content to load
+            }
+            
+        } catch (error) {
+            console.log('Error:', error);
+            
+        }
+
+
+
+        try {
+            // Close any cookie consent or pop-ups if they exist
+            //reload the page
+            await page.reload({ waitUntil: 'networkidle', timeout: 80000 });
+            console.log('Reloaded the page');
+            //capture a screenshot
+            await page.screenshot({ path: 'screenshot_003.png' });
+
+
+            const closeButton = await page.$('svg[aria-label="Close"]');
+            if (closeButton) {
+                console.log('Close Button Found');
+                await closeButton.click();
+                console.log('Closed an overlay or popup');
+                await page.waitForTimeout(1000); // Wait for closure animation
+                //capture a screenshot
+                await page.screenshot({ path: 'screenshot_002.png' });
+            }
+        } catch (e) {
+            console.log('No pop-up to close or failed to close it.');
+        }
+
         // Check if the URL was redirected
         if (url !== finalUrl) {
             console.log('URL was redirected');
+            //capture a scrrenshot
+            await page.screenshot({ path: 'screenshot_001.png' });
             //get the screen shot of the page
 
             //check url has a paramter call img_index
@@ -93,22 +120,18 @@ const imageHandler = async (req, res) => {
 
                 let nextButton;
                 do {
-                    try {
-                        // Close any cookie consent or pop-ups if they exist
-                        const closeButton = await page.$('button[aria-label="Close"], .cookie-consent button, .close-button');
-                        if (closeButton) {
-                            await closeButton.click();
-                            console.log('Closed an overlay or popup');
-                            await page.waitForTimeout(1000); // Wait for closure animation
-                        }
-                    } catch (e) {
-                        console.log('No pop-up to close or failed to close it.');
-                    }
+                    
+
+                   
+        
+
 
                     nextButton = await page.$('button[aria-label="Next"]');
                     if (nextButton) {
                         await nextButton.click();
                         await page.waitForTimeout(1000); // Small delay for content to load
+
+                        
 
                         console.log('Clicked the "Next" button');
 
@@ -137,6 +160,10 @@ const imageHandler = async (req, res) => {
                     console.log(`${index + 1}: ${element}\n`);
                 });
 
+              
+
+               // Send the data to frontend
+               res.json({ message: [...imageLinks] });
                 // let redirected = false;
                 // while (!redirected) {
 
@@ -250,9 +277,9 @@ const imageHandler = async (req, res) => {
             console.log('URL was not redirected');
 
             const firstImage = $('img').first().attr('src');
-            const secondImage = $('img').eq(1).attr('src');
+            //const secondImage = $('img').eq(1).attr('src');
             if (firstImage) {
-                imageLinks.push(firstImage);
+                
                 console.log('First Image:', firstImage);
                 console.log('');
 
@@ -271,11 +298,22 @@ const imageHandler = async (req, res) => {
         //     imgs.map(img => img.src || img.getAttribute('data-src') || img.getAttribute('data-original'))
         // );
 
-        // console.log('Image URLs:', imageLinks);
-        res.json({ message: "Image URLs" });
+       
     } catch (error) {
-        console.error('Error:', error)
-        res.status(500).send('Error processing image URL');
+        if (error.name === 'TimeoutError') {
+            console.error('TimeoutError:', error);
+            //get the cren shot of the page
+            await page.screenshot({ path: 'screenshot.png' });
+            console.log('Screenshot captured');
+            //save the html content to a file
+            const html = await page.content();
+            fs.writeFileSync('pageContent.html', html, 'utf8');
+            console.log('HTML content saved to pageContent.html');
+            res.status(500).send('Timeout error while processing image URL');
+        } else {
+            console.error('Error:', error);
+            res.status(500).send('Error processing image URL');
+        }
     } finally {
         await browser.close();
     }
@@ -311,4 +349,4 @@ const downloadSingleImage =async (req,res)=>{
 
 
 
-module.exports = { reelHandler, downloadReelHandler, imageHandler, downloadImageHandler,downloadSingleImage };
+module.exports = { reelHandler, downloadReelHandler, imageHandler,downloadSingleImage };

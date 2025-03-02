@@ -19,6 +19,7 @@ const reelHandler = async (req, res) => {
     // Wait for the video tag to appear
     await page.waitForSelector("video");
 
+    const $ = cheerio.load(await page.content());
 
 
     const videoDirectLink = $("video").attr("src");
@@ -29,53 +30,114 @@ const reelHandler = async (req, res) => {
     res.json({ message: videoDirectLink });
 
 
-    // // Fetch the Blob data within the browser context
-    // const data = await page.evaluate(async (videoDirectLink) => {
-    //     const response = await fetch(videoDirectLink);
-    //     const blob = await response.blob();
-    //     const arrayBuffer = await blob.arrayBuffer();
-    //     return Array.from(new Uint8Array(arrayBuffer));
-    // }, videoDirectLink);
-
-    // // Convert the data to a Buffer and save it as a file
-    // fs.writeFileSync('video.mp4', Buffer.from(data));
-
-    // console.log('File downloaded as video.mp4');
-    // await browser.close();
-
-    // res.json({ message: 'File downloaded as video.mp4' });
 
 
 }
 const imageHandler = async (req, res) => {
     const url = req.body.data;
-    console.log('URL:', url);
+
+    console.log(`[URL Request Come:`, url);
+    //console the cureent time with secon
+    console.log('Current Time:', new Date().toLocaleTimeString());
 
     const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext(); // Create a new context
+
+     // Preload a cookie to accept consent
+     await context.addCookies([
+        {
+            name: 'cookie_consent',
+            value: 'accepted', // The value depends on how the site stores consent
+            domain: 'https://www.instagram.com', // Change this to your target domain
+            path: '/'
+        }
+    ]);
     const page = await browser.newPage();
+
+    console.log('Browser opended');
+    console.log('Current Time:', new Date().toLocaleTimeString());
+
 
     try {
         // Navigate to the page and wait for network to be idle
         await page.goto(url, { waitUntil: 'networkidle', timeout: 80000 });
 
-        // Wait for at least one <img> to appear
-        await page.waitForSelector("img", { timeout: 60000 }); // Increase timeout to 60 seconds
+        console.log('Page loaded');
+        console.log('Current Time:', new Date().toLocaleTimeString());
 
+
+        // Wait for at least one <img> to appear
         // Get the HTML content
         const html = await page.content();
         const $ = cheerio.load(html);
+
+        console.log("Html Content Loaded");
+        console.log('Current Time:', new Date().toLocaleTimeString());
+
 
         // Capture the final URL after any redirection
         let finalUrl = page.url();
         console.log('Final URL:', finalUrl);
 
         const seenUrls = new Set(); // Track seen URLs to avoid duplicate logs
-        const imageLinks = new Set(); // Store unique image URLs
+        const imageLinks = new Set()// Store unique image URLs
+
+
+
+
 
         // Check if the URL was redirected
-        if (url !== finalUrl || finalUrl.includes('img_index')) {
-            console.log('URL was redirected')
-            //get the screen shot of the page
+        if (url !== finalUrl) {
+            console.log('URL was redirected');
+            console.log('Current Time:', new Date().toLocaleTimeString());
+
+
+
+            // try {
+
+            //     //check button with text content Allow All Cookies
+            //     const allowButton = await page.$('button:has-text(" Allow all cookies")');
+            //     if (allowButton) {
+            //         await allowButton.click();
+            //         console.log('Clicked the "Allow All Cookies" button');
+            //         console.log('Current Time:', new Date().toLocaleTimeString());
+
+            //         await page.waitForTimeout(1000); // Small delay for content to load
+            //     }
+
+            // } catch (error) {
+            //     console.log('Error:', error);
+
+            // }
+
+
+
+            try {
+                // Close any cookie consent or pop-ups if they exist
+                //reload the page
+                // await page.reload({ waitUntil: 'networkidle', timeout: 80000 });
+                // console.log('Reloaded the page');
+                // console.log('Current Time:', new Date().toLocaleTimeString());
+
+                // //capture a screenshot
+                // await page.screenshot({ path: 'screenshot_003.png' });
+
+
+                const closeButton = await page.$('svg[aria-label="Close"]');
+                if (closeButton) {
+                    console.log('Close Button Found');
+                    console.log('Current Time:', new Date().toLocaleTimeString());
+
+                    await closeButton.click();
+                    console.log('Closed an overlay or popup');
+                    await page.waitForTimeout(1000); // Wait for closure animation
+
+                }
+            } catch (e) {
+                console.log('No pop-up to close or failed to close it.');
+            }
+
+
 
             //check url has a paramter call img_index
             if (finalUrl.includes('img_index')) {
@@ -85,33 +147,37 @@ const imageHandler = async (req, res) => {
                 let currentIndex = 1; // Start at 1 as per your requirement
                 let currentUrl = finalUrl.replace(`img_index=${initialIndex}`, `img_index=${currentIndex}`);
                 console.log('Current URL:', currentUrl);
+                console.log('Current Time:', new Date().toLocaleTimeString());
+
                 await page.goto(currentUrl, { waitUntil: 'networkidle', timeout: 80000 });
-             
+                console.log('Navigated to the current URL');
+                console.log('Current Time:', new Date().toLocaleTimeString());
 
                 let nextButton;
                 do {
-                    try {
-                        // Close any cookie consent or pop-ups if they exist
-                        const closeButton = await page.$('button[aria-label="Close"], .cookie-consent button, .close-button');
-                        if (closeButton) {
-                            await closeButton.click();
-                            console.log('Closed an overlay or popup');
-                            await page.waitForTimeout(1000); // Wait for closure animation
-                        }
-                    } catch (e) {
-                        console.log('No pop-up to close or failed to close it.');
-                    }
+
+
+
+
+
 
                     nextButton = await page.$('button[aria-label="Next"]');
                     if (nextButton) {
                         await nextButton.click();
                         await page.waitForTimeout(1000); // Small delay for content to load
 
+
+
                         console.log('Clicked the "Next" button');
+                        console.log('Current Time:', new Date().toLocaleTimeString());
+
 
                         // Re-fetch the page content
                         const updatedHtml = await page.content();
                         const $$ = cheerio.load(updatedHtml);
+
+                        console.log("Updated Html Content Loaded");
+                        console.log('Current Time:', new Date().toLocaleTimeString());
 
                         // Extract image URLs only within <li tabindex="-1"> elements
                         $$('li[tabindex="-1"] img').each((index, img) => {
@@ -134,7 +200,11 @@ const imageHandler = async (req, res) => {
                     console.log(`${index + 1}: ${element}\n`);
                 });
 
-               
+                console.log('Data Send to Frontend');
+                console.log('Current Time:', new Date().toLocaleTimeString());
+
+                // Send the data to frontend
+                res.json({ message: [...imageLinks] });
 
 
 
@@ -144,16 +214,18 @@ const imageHandler = async (req, res) => {
                 console.log('URL does not have img_index parameter');
 
             }
-          
+
 
         }
         else {
             console.log('URL was not redirected');
+            console.log('Current Time:', new Date().toLocaleTimeString());
 
-            const firstImage = $('img').first().attr('src');
-           
+
+            const firstImage = $('div[tabindex="-1"] img').first().attr('src');
+            //const secondImage = $('img').eq(1).attr('src');
             if (firstImage) {
-                imageLinks.push(firstImage);
+
                 console.log('First Image:', firstImage);
                 console.log('');
 
@@ -161,16 +233,26 @@ const imageHandler = async (req, res) => {
             }
             res.json({ message: firstImage });
 
-
-
         }
 
-     
-      
-        res.json({ message: "Image URLs" });
+
+
+
     } catch (error) {
-        console.error('Error:', error)
-        res.status(500).send('Error processing image URL');
+        if (error.name === 'TimeoutError') {
+            console.error('TimeoutError:', error);
+            //get the cren shot of the page
+            await page.screenshot({ path: 'screenshot.png' });
+            console.log('Screenshot captured');
+            //save the html content to a file
+            const html = await page.content();
+            fs.writeFileSync('pageContent.html', html, 'utf8');
+            console.log('HTML content saved to pageContent.html');
+            res.status(500).send('Timeout error while processing image URL');
+        } else {
+            console.error('Error:', error);
+            res.status(500).send('Error processing image URL');
+        }
     } finally {
         await browser.close();
     }
@@ -189,7 +271,9 @@ const downloadReelHandler = async (req, res) => {
     }
 
 }
-const downloadSingleImage =async (req,res)=>{
+
+
+const downloadSingleImage = async (req, res) => {
     const imageUrl = req.query.url;
     try {
         const response = await axios.get(imageUrl, { responseType: 'stream' });
