@@ -10,6 +10,15 @@ export default function Home() {
 
   const sendData = async () => {
     const data = inputRef.current ? inputRef.current.value : "";
+    let singleImage = true;
+
+    
+    //check input has img_index parameter or not
+    if (data.includes("img_index")){
+      singleImage = false;
+     
+    }
+
     alert("Your Reel is Processing. Please wait for a moment.");
 
     let endpoint = "";
@@ -25,7 +34,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ data }),
+      body: JSON.stringify({ "data":data, "singleImage":singleImage }),
     });
     const resData = await res.json();
     console.log(resData);

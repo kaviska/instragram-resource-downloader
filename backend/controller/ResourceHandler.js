@@ -11,6 +11,8 @@ const reelHandler = async (req, res) => {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
 
+    
+
     // Navigate to the page containing the Blob URL
     await page.goto(url, { waitUntil: 'load', timeout: 80000 });
 
@@ -40,11 +42,28 @@ const imageHandler = async (req, res) => {
     //console the cureent time with secon
     console.log('Current Time:', new Date().toLocaleTimeString());
 
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({
+        headless: true, args: [
+            // Use with caution!
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-extensions',
+            '--disable-dev-shm-usage',   // Use RAM instead of disk cache
+            '--disable-gpu',             // No GPU rendering
+            '--no-first-run',            // Skip first run check
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--disable-gl-drawing-for-tests',
+        ],
+        ignoreHTTPSErrors: true
+    });
     const context = await browser.newContext(); // Create a new context
 
-     // Preload a cookie to accept consent
-     await context.addCookies([
+
+
+    // Preload a cookie to accept consent
+    await context.addCookies([
         {
             name: 'cookie_consent',
             value: 'accepted', // The value depends on how the site stores consent
@@ -52,24 +71,61 @@ const imageHandler = async (req, res) => {
             path: '/'
         }
     ]);
-    const page = await browser.newPage();
+    const page = await context.newPage();
+
+
+
+    // Intercept and block unnecessary requests
+    await page.route('**/*', (route) => {
+        const url = route.request().url();
+        if (url.endsWith('.jpg') || url.endsWith('.png') || url.endsWith('.jpeg') || url.includes('instagram.com')) {
+
+            route.continue();
+        } else {
+
+            route.abort();
+        }
+    });
+
 
     console.log('Browser opended');
     console.log('Current Time:', new Date().toLocaleTimeString());
 
 
     try {
+        // Set the viewport size to match your laptop screen
+        await page.setViewportSize({ width: 1366, height: 768 }); // Adjust as per your screen resolution
         // Navigate to the page and wait for network to be idle
-        await page.goto(url, { waitUntil: 'networkidle', timeout: 80000 });
+        await page.goto(url, { waitUntil: 'load', timeout: 30000 });
+
+        //cosnole log the network request   
 
         console.log('Page loaded');
         console.log('Current Time:', new Date().toLocaleTimeString());
+
+        
+           await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
+            console.log('Image Found');
+            console.log('Current Time:', new Date().toLocaleTimeString());
+        
+
+
+       
+
+
+
+
 
 
         // Wait for at least one <img> to appear
         // Get the HTML content
         const html = await page.content();
         const $ = cheerio.load(html);
+
+
+
+
+
 
         console.log("Html Content Loaded");
         console.log('Current Time:', new Date().toLocaleTimeString());
@@ -87,84 +143,45 @@ const imageHandler = async (req, res) => {
 
 
         // Check if the URL was redirected
-        if (url !== finalUrl) {
+        if (url !== finalUrl || finalUrl.includes('img_index')) {
             console.log('URL was redirected');
             console.log('Current Time:', new Date().toLocaleTimeString());
 
 
 
-            // try {
 
-            //     //check button with text content Allow All Cookies
-            //     const allowButton = await page.$('button:has-text(" Allow all cookies")');
-            //     if (allowButton) {
-            //         await allowButton.click();
-            //         console.log('Clicked the "Allow All Cookies" button');
-            //         console.log('Current Time:', new Date().toLocaleTimeString());
+            const closeButton = await page.$('svg[aria-label="Close"]');
+            if (closeButton) {
+                // Reloading the page faster by using a different waitUntil option
+                await page.reload({ waitUntil: 'domcontentloaded' });
+                //wait two second
+                await page.waitForSelector('button[aria-label="Next"]', { timeout: 60000 });
+                //await page.click('div[role="button"]:has(svg[aria-label="Close"])');
 
-            //         await page.waitForTimeout(1000); // Small delay for content to load
-            //     }
-
-            // } catch (error) {
-            //     console.log('Error:', error);
-
-            // }
-
-
-
-            try {
-                // Close any cookie consent or pop-ups if they exist
-                //reload the page
-                // await page.reload({ waitUntil: 'networkidle', timeout: 80000 });
-                // console.log('Reloaded the page');
-                // console.log('Current Time:', new Date().toLocaleTimeString());
-
-                // //capture a screenshot
-                // await page.screenshot({ path: 'screenshot_003.png' });
-
-
-                const closeButton = await page.$('svg[aria-label="Close"]');
-                if (closeButton) {
-                    console.log('Close Button Found');
-                    console.log('Current Time:', new Date().toLocaleTimeString());
-
-                    await closeButton.click();
-                    console.log('Closed an overlay or popup');
-                    await page.waitForTimeout(1000); // Wait for closure animation
-
-                }
-            } catch (e) {
-                console.log('No pop-up to close or failed to close it.');
+                console.log('Reloaded the page');
+                console.log('Current Time:', new Date().toLocaleTimeString());
             }
+
+
+
+
 
 
 
             //check url has a paramter call img_index
             if (finalUrl.includes('img_index')) {
-                console.log('URL has img_index parameter');
-
-                const initialIndex = parseInt(new URL(finalUrl).searchParams.get('img_index')) || 1;
-                let currentIndex = 1; // Start at 1 as per your requirement
-                let currentUrl = finalUrl.replace(`img_index=${initialIndex}`, `img_index=${currentIndex}`);
-                console.log('Current URL:', currentUrl);
+                console.log('URL has img_index parameter')
                 console.log('Current Time:', new Date().toLocaleTimeString());
 
-                await page.goto(currentUrl, { waitUntil: 'networkidle', timeout: 80000 });
-                console.log('Navigated to the current URL');
-                console.log('Current Time:', new Date().toLocaleTimeString());
+
 
                 let nextButton;
                 do {
 
-
-
-
-
-
                     nextButton = await page.$('button[aria-label="Next"]');
                     if (nextButton) {
                         await nextButton.click();
-                        await page.waitForTimeout(1000); // Small delay for content to load
+                        await page.waitForTimeout(500); // Small delay for content to load
 
 
 
