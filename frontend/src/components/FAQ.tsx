@@ -4,11 +4,7 @@ import { useState } from "react";
 export default function FAQ() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-    interface FAQItem {
-        question: string;
-        answer: string;
-    }
-
+   
     const toggleFAQ = (index: number): void => {
         setOpenIndex(openIndex === index ? null : index);
     };

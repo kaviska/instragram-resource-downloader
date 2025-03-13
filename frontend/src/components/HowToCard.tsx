@@ -1,6 +1,6 @@
 import Image from "next/image";
 import ReaderImage from "../../public/reader.jpg";
-import ProfileImage from "../../public/profile.avif";
+
 
 
 export default function HowToCard() {
