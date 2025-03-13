@@ -24,7 +24,7 @@ export default async function Page({ params }: PageProps) {
     return await client.fetch(query, params);
   }
 
-  const blog = await getBlogBySlug(params.slug);
+  const blog = await getBlogBySlug((await params).slug);
   console.log(blog);
 
   return (
