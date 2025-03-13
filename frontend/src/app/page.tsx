@@ -2,6 +2,7 @@ import Card from "@/components/Card";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import HowToCard from "@/components/HowToCard";
+import Nav from "@/components/Nav";
 
 import { client } from "./lib/sanity";
 
@@ -31,6 +32,7 @@ export default async function Home() {
 
   return (
     <div>
+        <Nav />
       <div>
         <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
           How to download Instagram carousel posts?

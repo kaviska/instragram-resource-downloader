@@ -11,7 +11,7 @@ interface PageProps {
   };
 }
 
-export default async function Page({ params }: PageProps ) {
+export default async function Page( { params }: PageProps) {
   console.log(params);
 
   async function getBlogBySlug(slug: string) {
@@ -54,7 +54,7 @@ export default async function Page({ params }: PageProps ) {
           <div className="">
             <img
               src={urlFor(blog[0].mainImage).url()}
-              class="img-fluid  rounded-top"
+              className="img-fluid  rounded-top"
               alt=""
             />
 
