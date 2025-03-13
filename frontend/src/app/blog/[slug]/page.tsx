@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  console.log("paramter"+ params);
+  console.log("paramter"+params);
   
 
   async function getBlogBySlug(slug: string) {
@@ -24,7 +24,7 @@ export default async function Page({ params }: PageProps) {
     return await client.fetch(query, params);
   }
 
-  const blog = await getBlogBySlug((await params).slug);
+  const blog = await getBlogBySlug(await params.slug);
   console.log(blog);
 
   return (
