@@ -13,7 +13,7 @@ export default async function Page({ params }: PageProps) {
   console.log("paramter"+params);
   
 
-  async function getBlogBySlug(slug: string) {
+  async function getBlogBySlug(slug: string[]) {
     const query = `*[_type == "blog" && slug.current == $slug]{
     ...,
     "author": author->name,
@@ -24,7 +24,8 @@ export default async function Page({ params }: PageProps) {
     return await client.fetch(query, params);
   }
 
-  const blog = await getBlogBySlug(await params.slug);
+  const resolvedParams = await params;
+  const blog = await getBlogBySlug(resolvedParams.slug);
   console.log(blog);
 
   return (
