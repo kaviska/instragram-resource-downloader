@@ -1,0 +1,12 @@
+[
+  {
+    "name": "PHPSESSID",
+    "value": "3ren5089ttdohmi8dtqtojcjho",
+    "domain": "pos.darkdevilspices.com",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  }
+]

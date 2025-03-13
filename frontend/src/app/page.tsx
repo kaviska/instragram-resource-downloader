@@ -1,135 +1,66 @@
-"use client";
-import { useRef, useState } from "react";
-import Image from "next/image";
+import Card from "@/components/Card";
+import FAQ from "@/components/FAQ";
+import Footer from "@/components/Footer";
+import HowToCard from "@/components/HowToCard";
 
-export default function Home() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const[multipleImages, setMultipleImages] = useState<string[] | null>(null);
+import { client } from "./lib/sanity";
 
-  const sendData = async () => {
-    const data = inputRef.current ? inputRef.current.value : "";
-    let singleImage = true;
+type Blog = {
+  _id: string;
+  title: string;
+  image: string;
+  titleDescription: string;
+  slug: string;
+  author: string;
+};
 
-    
-    //check input has img_index parameter or not
-    if (data.includes("img_index")){
-      singleImage = false;
-     
-    }
+async function getBlogs() {
+  const query = `*[_type == "blog"]{
+    _id,
+    title,
+    "image": mainImage,
+    "titleDescription": titleDescription,
+    "slug": slug.current,
+    "author": author->name
+  }`;
+  return await client.fetch(query);
+}
 
-    alert("Your Reel is Processing. Please wait for a moment.");
-
-    let endpoint = "";
-    if (data.includes("/reel/")) {
-      endpoint = "http://localhost:5000/api/reel/";
-    } else {
-      endpoint = "http://localhost:5000/api/image/";
-    }
-
-    console.log(data);
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ "data":data, "singleImage":singleImage }),
-    });
-    const resData = await res.json();
-    console.log(resData);
-    if (endpoint === "http://localhost:5000/api/image/"){
-      //check res.data is a array
-      if (Array.isArray(resData.message)){
-        setMultipleImages(resData.message);
-        return;
-      }
-      setImageUrl(resData.message);
-
-
-    }
-    if (endpoint === "http://localhost:5000/api/reel/")
-      setVideoUrl(resData.message);
-
-    //setVideoUrl(resData.message); // Set the video URL
-  };
+export default async function Home() {
+  const blogs=await getBlogs()
 
   return (
     <div>
-      <input
-        ref={inputRef}
-        className="mt-4 w-screen h-12 text-black"
-        placeholder="Add Your Text"
-      />
-      <button
-        className="bg-blue-500 px-3 py-4 rounded-[10px]"
-        onClick={sendData}
-      >
-        Send
-      </button>
+      <div>
+        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
+          How to download Instagram carousel posts?
+        </h1>
+        <div className="flex md:flex-row flex-col md:gap-20 gap-3 align-middle items-center justify-center ">
+          <HowToCard></HowToCard>
+          <HowToCard></HowToCard>
+          <HowToCard></HowToCard>
+        </div>
+      </div>
 
-      {videoUrl && (
-        <div className="mt-4">
-          <video controls width="600">
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-
-          <a
-            href={`http://localhost:5000/api/download-reel?url=${encodeURIComponent(
-              videoUrl
-            )}`}
-            download="video.mp4"
-            className="bg-green-500 px-3 py-4 rounded-[10px] mt-4 inline-block"
-          >
-            Download Video
+      <div>
+        <FAQ></FAQ>
+      </div>
+      <h1 className="text-2xl  font-semibold text-center text-gray-800 lg:text-3xl my-8">
+        Recent Blog
+      </h1>
+      <div className="flex md:flex-row flex-col md:gap-20 gap-3 align-middle items-center justify-center ">
+        {blogs.slice(0, 3).map((blog: Blog) => (
+          <a href={`/blog/${blog.slug}`} key={blog._id}>
+            <Card
+              CoverImage={blog.image}
+              Title={blog.title}
+              Description={blog.titleDescription}
+              Author={blog.author}
+            />
           </a>
-        </div>
-      )}
-      {imageUrl && (
-        <div className="mt-4">
-          <Image
-            src={imageUrl}
-            alt="image"
-            width={400}
-            height={400}
-            className="w-96 h-96 object-cover"
-          />
-          <a
-            href={`http://localhost:5000/api/download-image-single?url=${encodeURIComponent(
-              imageUrl
-            )}`}
-            download="video.mp4"
-            className="bg-green-500 px-3 py-4 rounded-[10px] mt-4 inline-block"
-          >
-            Download Image
-          </a>
-        </div>
-      )}
-      {multipleImages && (
-        <div className="mt-4">
-          {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <Image
-                src={image}
-                alt="image"
-                width={400}
-                height={400}
-                className="w-96 h-96 object-cover"
-              />
-              <a
-                href={`http://localhost:5000/api/download-image-single?url=${encodeURIComponent(
-                  image
-                )}`}
-                download="video.mp4"
-                className="bg-green-500 px-3 py-4 rounded-[10px] mt-4 inline-block"
-              >
-                Download Image
-              </a>
-            </div>
-          ))}
-        </div>
-      )}
+        ))}
+      </div>
+      <Footer />
     </div>
   );
 }

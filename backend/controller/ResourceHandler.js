@@ -4,20 +4,14 @@ const fs = require('fs');
 const axios = require('axios');
 
 
+
 const reelHandler = async (req, res) => {
     const url = req.body.data;
     console.log('URL:', url);
-
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
-
-    
-
     // Navigate to the page containing the Blob URL
-    await page.goto(url, { waitUntil: 'load', timeout: 80000 });
-
-
-
+    await page.goto(url, { waitUntil: 'load', timeout: 80000 })
     // Wait for the video tag to appear
     await page.waitForSelector("video");
 
@@ -31,10 +25,8 @@ const reelHandler = async (req, res) => {
     console.log('URL Send to Frontend');
     res.json({ message: videoDirectLink });
 
-
-
-
 }
+
 const imageHandler = async (req, res) => {
     const url = req.body.data;
 
