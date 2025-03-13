@@ -5,7 +5,7 @@ import { urlFor } from "../app/lib/sanity";
 import ProfileImage from "../../public/profile.avif";
 
 interface CardProps {
-  CoverImage: any;
+  CoverImage: string;
   Title: string;
   Description: string;
   Author:string;
