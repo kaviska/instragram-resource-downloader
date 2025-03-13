@@ -5,7 +5,13 @@ import { client } from "../../lib/sanity";
 import { urlFor } from "../../lib/sanity";
 import { PortableText } from "@portabletext/react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function Page({ params }: PageProps ) {
   console.log(params);
 
   async function getBlogBySlug(slug: string) {
