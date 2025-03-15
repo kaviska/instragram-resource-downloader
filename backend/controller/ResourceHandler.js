@@ -8,22 +8,36 @@ const axios = require('axios');
 const reelHandler = async (req, res) => {
     const url = req.body.data;
     console.log('URL:', url);
+    console.log('Current Time:', new Date().toLocaleTimeString());
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
+    
     // Navigate to the page containing the Blob URL
-    await page.goto(url, { waitUntil: 'load', timeout: 80000 })
+    await page.goto(url, { waitUntil: 'commit', timeout: 80000 })
+
+    console.log('Page loaded');
+    console.log('Current Time:', new Date().toLocaleTimeString());
+
     // Wait for the video tag to appear
     await page.waitForSelector("video");
+    console.log('Video Found');
+    console.log('Current Time:', new Date().toLocaleTimeString());
 
     const $ = cheerio.load(await page.content());
 
 
     const videoDirectLink = $("video").attr("src");
+    const thumbnail = $("meta[property='og:image']").attr("content");
+    console.log('Thumbnail:', thumbnail);
+    console.log('Current Time:', new Date().toLocaleTimeString());
+
 
     console.log('Blob URL:', videoDirectLink);
     await browser.close();
     console.log('URL Send to Frontend');
+    console.log('Current Time:', new Date().toLocaleTimeString());
     res.json({ message: videoDirectLink });
+
 
 }
 
