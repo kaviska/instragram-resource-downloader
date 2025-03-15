@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Head from "next/head";
 import ProfileImage from "../../../../public/profile.avif";
 import Nav from "@/components/Nav";
 import { client } from "../../lib/sanity";
@@ -8,10 +7,9 @@ import { PortableText } from "@portabletext/react";
 import FAQBlog from "@/components/FAQBlog";
 
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string[] }>;
 }
+
 
 async function getBlogBySlug(slug: string) {
   const query = `*[_type == "blog" && slug.current == $slug]{
@@ -64,10 +62,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div>
-      <Head>
-        <title>{blog[0].metaTitle || "Blog Post"}</title>
-        <meta name="description" content={blog[0].metaDescription || "Blog post description"} />
-      </Head>
+      
       <div className="header-blog mx-2 rounded-[20px] mt-5">
         <Nav></Nav>
         <div className="flex flex-col align-start justify-end justify-items-end h-[90vh]">
