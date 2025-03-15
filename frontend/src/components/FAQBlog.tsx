@@ -5,7 +5,7 @@ interface FAQProps {
   faq: Array<{ question: string; answer: string }>;
 }
 
-export default function FAQ({ faq }: FAQProps) {
+export default function FAQBlog({ faq }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number): void => {
@@ -14,8 +14,8 @@ export default function FAQ({ faq }: FAQProps) {
 
   return (
     <section className="bg-white">
-      <div className="container max-w-4xl px-6 py-10 mx-auto">
-        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl">
+      <div className="max-w-4xl  py-10">
+        <h1 className="text-2xl font-semibold  text-gray-800 lg:text-3xl">
           Frequently Asked Questions
         </h1>
 

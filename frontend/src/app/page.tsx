@@ -15,6 +15,14 @@ type Blog = {
   author: string;
 };
 
+const faq = [
+  { question: "How to download Instagram carousel posts?", answer: "You can download Instagram carousel posts by following these steps" },
+  { question: "How to download Instagram carousel posts?", answer: "You can download Instagram carousel posts by following these steps" },
+  { question: "How to download Instagram carousel posts?", answer: "You can download Instagram carousel posts by following these steps" },
+  { question: "How to download Instagram carousel posts?", answer: "You can download Instagram carousel posts by following these steps" },
+  { question: "How to download Instagram carousel posts?", answer: "You can download Instagram carousel posts by following these steps" }
+];
+
 async function getBlogs() {
   const query = `*[_type == "blog"]{
     _id,
@@ -28,11 +36,11 @@ async function getBlogs() {
 }
 
 export default async function Home() {
-  const blogs=await getBlogs()
+  const blogs = await getBlogs();
 
   return (
     <div>
-        <Nav />
+      <Nav />
       <div>
         <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
           How to download Instagram carousel posts?
@@ -45,7 +53,7 @@ export default async function Home() {
       </div>
 
       <div>
-        <FAQ></FAQ>
+        <FAQ faq={faq}></FAQ>
       </div>
       <h1 className="text-2xl  font-semibold text-center text-gray-800 lg:text-3xl my-8">
         Recent Blog
