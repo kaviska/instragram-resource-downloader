@@ -36,7 +36,7 @@ const reelHandler = async (req, res) => {
     await browser.close();
     console.log('URL Send to Frontend');
     console.log('Current Time:', new Date().toLocaleTimeString());
-    res.json({ message: videoDirectLink });
+    res.json({ message: videoDirectLink, thumbnail: thumbnail });
 
 
 }
