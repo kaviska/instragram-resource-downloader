@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 
-async function getBlogBySlug(slug: string) {
+async function getBlogBySlug(slug: string[]) {
   const query = `*[_type == "blog" && slug.current == $slug]{
     ...,
     "author": author->name,
@@ -27,7 +27,8 @@ async function getBlogBySlug(slug: string) {
 
 // Dynamic Metadata
 export async function generateMetadata({ params }: PageProps) {
-  const blog = await getBlogBySlug(params.slug);
+  const resolvedParams = await params;
+  const blog = await getBlogBySlug(resolvedParams.slug);
   if (!blog || blog.length === 0) {
     return {
       title: "Blog Post",
@@ -57,9 +58,9 @@ export default async function Page({ params }: PageProps) {
   console.log("paramter" + params);
 
   
-  const blog = await getBlogBySlug(params.slug);
-  console.log(blog);
-
+  const resolvedParams = await params;
+  const blog = await getBlogBySlug(resolvedParams.slug);
+  
   return (
     <div>
       
