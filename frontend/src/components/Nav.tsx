@@ -1,4 +1,4 @@
-import Logo from '../../public/logo.png';
+import Logo from '/logo.png';
 import Image from 'next/image';
 export default function Nav() {
   return (
