@@ -50,7 +50,7 @@ export default function Home() {
     });
     const resData = await res.json();
     console.log(resData);
-    if (endpoint === "http://localhost:5000/api/image/") {
+    if (endpoint === "http://147.93.97.167:5000/api/image/") {
       //check res.data is a array
       if (Array.isArray(resData.message)) {
         setMultipleImages(resData.message);
@@ -58,7 +58,7 @@ export default function Home() {
       }
       setImageUrl(resData.message);
     }
-    if (endpoint === "http://localhost:5000/api/reel/")
+    if (endpoint === "http://147.93.97.167:5000/api/reel/")
       setVideoUrl(resData.message);
       setThumbnail(resData.thumbnail);
 
