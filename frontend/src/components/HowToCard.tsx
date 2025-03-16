@@ -1,19 +1,20 @@
 import Image from "next/image";
 import ReaderImage from "../../public/reader.jpg";
 
+interface HowToType{
+  howtoProps: { title: string; description: string };
+}
 
-
-export default function HowToCard() {
+export default function HowToCard({howtoProps}:HowToType) {
     return (
          <div>
-              <div className="flex flex-col w-[280px] gap-3 card p-4 rounded-[20px]">
+              <div className="flex flex-col w-[280px] h-[370px] gap-3 card p-4 rounded-[20px]">
                 <Image src={ReaderImage} alt="readr-image" className="rounded-[20px]"></Image>
                 <span className="text-[20px] font-bold">
-                  Interview With Economics and UI UX Engeinerr
+                   {howtoProps.title}
                 </span>
                 <span className="text-[14px]">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Debitis
-                  rerum corrupti sequi molestiae
+                    {howtoProps.description}
                   
                 </span>
         
