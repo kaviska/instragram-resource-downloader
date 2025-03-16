@@ -32,11 +32,11 @@ export default function Home() {
     let endpoint = "";
     if (data.includes("/reel/")) {
       //endpoint = "http://localhost:5000/api/reel/";
-      endpoint = "http://47.93.97.167:5000/api/reel/";
+      endpoint = "http://147.93.97.167:5000/api/reel/";
 
     } else {
       //endpoint = "http://localhost:5000/api/image/";
-      endpoint = "http://47.93.97.167:5000/api/image/";
+      endpoint = "http://147.93.97.167:5000/api/image/";
 
     }
 
