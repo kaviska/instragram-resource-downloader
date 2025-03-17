@@ -99,7 +99,7 @@ export default function Home() {
             />
 
             <a
-              href={`http://localhost:5000/api/download-reel?url=${encodeURIComponent(
+              href={`https://api.savefrominsta.app:5000/api/download-reel?url=${encodeURIComponent(
                 videoUrl
               )}`}
               download="video.mp4"
@@ -121,7 +121,7 @@ export default function Home() {
               className="w-96 h-96 object-cover"
             />
             <a
-              href={`http://localhost:5000/api/download-image-single?url=${encodeURIComponent(
+              href={`https://api.savefrominsta.app:5000/api/download-image-single?url=${encodeURIComponent(
                 imageUrl
               )}`}
               download="video.mp4"
@@ -144,7 +144,7 @@ export default function Home() {
                 className="w-96 h-96 object-cover"
               />
               <a
-                href={`http://localhost:5000/api/download-image-single?url=${encodeURIComponent(
+                href={`https://api.savefrominsta.app:5000/api/download-image-single?url=${encodeURIComponent(
                   image
                 )}`}
                 download="video.mp4"
