@@ -112,7 +112,7 @@ const imageHandler = async (req, res) => {
 
         console.log('Page loaded');
         console.log('Current Time:', new Date().toLocaleTimeString());
-        console.loh("Url:", page.url());
+        console.log("Url:", page.url());
 
         
            await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
