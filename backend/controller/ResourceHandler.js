@@ -93,7 +93,7 @@ const imageHandler = async (req, res) => {
         },
         ignoreHTTPSErrors: true
     });
-    const context = await browser.newContext(); // Create a new context
+    //const context = await browser.newContext(); // Create a new context
 
 
 
