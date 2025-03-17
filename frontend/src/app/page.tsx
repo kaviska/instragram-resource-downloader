@@ -31,10 +31,10 @@ export default function Home() {
     let endpoint = "";
     if (data.includes("/reel/")) {
       //endpoint = "http://localhost:5000/api/reel/";
-      endpoint = "https://api.savefrominsta.app//api/reel/";
+      endpoint = "https://api.savefrominsta.app/api/reel/";
     } else {
       //endpoint = "http://localhost:5000/api/image/";
-      endpoint = "https://api.savefrominsta.app//api/image/";
+      endpoint = "https://api.savefrominsta.app/api/image/";
     }
 
     console.log(data);
@@ -47,7 +47,7 @@ export default function Home() {
     });
     const resData = await res.json();
     console.log(resData);
-    if (endpoint === "https://api.savefrominsta.app//api/image/") {
+    if (endpoint === "https://api.savefrominsta.app/api/image/") {
       //check res.data is a array
       if (Array.isArray(resData.message)) {
         setMultipleImages(resData.message);
@@ -55,7 +55,7 @@ export default function Home() {
       }
       setImageUrl(resData.message);
     }
-    if (endpoint === "https://api.savefrominsta.app//api/reel/")
+    if (endpoint === "https://api.savefrominsta.app/api/reel/")
       setVideoUrl(resData.message);
     setThumbnail(resData.thumbnail);
 
