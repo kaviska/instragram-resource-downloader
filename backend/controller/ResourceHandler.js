@@ -106,7 +106,7 @@ const imageHandler = async (req, res) => {
         // Set the viewport size to match your laptop screen
         await page.setViewportSize({ width: 1366, height: 768 }); // Adjust as per your screen resolution
         // Navigate to the page and wait for network to be idle
-        await page.goto(url, { waitUntil: 'load', timeout: 30000 });
+        await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
 
         //cosnole log the network request   
 
@@ -115,9 +115,9 @@ const imageHandler = async (req, res) => {
         console.log("Url:", page.url());
 
         
-           await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
-            console.log('Image Found');
-            console.log('Current Time:', new Date().toLocaleTimeString());
+        //    await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
+        //     console.log('Image Found');
+        //     console.log('Current Time:', new Date().toLocaleTimeString());
         
 
 
