@@ -9,7 +9,12 @@ const reelHandler = async (req, res) => {
     const url = req.body.data;
     console.log('URL:', url);
     console.log('Current Time:', new Date().toLocaleTimeString());
-    const browser = await chromium.launch({ headless: true });
+    const proxy = {
+        server: 'http://38.154.227.167:5868', // proxy IP and port
+        username: 'guclrdex', // proxy username
+        password: 'kdtu4nfd8x7k' // proxy password
+    };
+    const browser = await chromium.launch({ headless: true ,proxy: proxy });
     const page = await browser.newPage();
 
     // Navigate to the page containing the Blob URL
