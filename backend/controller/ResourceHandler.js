@@ -158,9 +158,7 @@ const imageHandler = async (req, res) => {
             console.log('URL was redirected');
             console.log('Current Time:', new Date().toLocaleTimeString());
 
-            page.reload({ waitUntil: 'domcontentloaded' });
-            console.log('Reloaded the page', new Date().toLocaleTimeString());
-
+          
 
 
 
