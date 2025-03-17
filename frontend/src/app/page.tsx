@@ -30,11 +30,11 @@ export default function Home() {
 
     let endpoint = "";
     if (data.includes("/reel/")) {
-      //endpoint = "http://localhost:5000/api/reel/";
-      endpoint = "https://api.savefrominsta.app/api/reel/";
+      endpoint = "http://localhost:5000/api/reel/";
+      //endpoint = "https://api.savefrominsta.app/api/reel/";
     } else {
-      //endpoint = "http://localhost:5000/api/image/";
-      endpoint = "https://api.savefrominsta.app/api/image/";
+      endpoint = "http://localhost:5000/api/image/";
+      //endpoint = "https://api.savefrominsta.app/api/image/";
     }
 
     console.log(data);

@@ -93,6 +93,10 @@ const imageHandler = async (req, res) => {
         }
     });
 
+      await page.route('https://www.instagram.com/accounts/login', (route) => {
+        route.abort();  // Blocks the request to the login page
+      });
+
 
     console.log('Browser opended');
     console.log('Current Time:', new Date().toLocaleTimeString());
@@ -108,6 +112,7 @@ const imageHandler = async (req, res) => {
 
         console.log('Page loaded');
         console.log('Current Time:', new Date().toLocaleTimeString());
+        console.loh("Url:", page.url());
 
         
            await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
