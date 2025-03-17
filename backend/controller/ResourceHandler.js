@@ -11,7 +11,7 @@ const reelHandler = async (req, res) => {
     console.log('Current Time:', new Date().toLocaleTimeString());
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
-    
+
     // Navigate to the page containing the Blob URL
     await page.goto(url, { waitUntil: 'commit', timeout: 80000 })
 
@@ -93,9 +93,9 @@ const imageHandler = async (req, res) => {
         }
     });
 
-      await page.route('https://www.instagram.com/accounts/login', (route) => {
+    await page.route('https://www.instagram.com/accounts/login', (route) => {
         route.abort();  // Blocks the request to the login page
-      });
+    });
 
 
     console.log('Browser opended');
@@ -114,14 +114,14 @@ const imageHandler = async (req, res) => {
         console.log('Current Time:', new Date().toLocaleTimeString());
         console.log("Url:", page.url());
 
-        
+
         //    await page.waitForSelector('svg[aria-label="Like"]', { timeout: 60000 });
         //     console.log('Image Found');
         //     console.log('Current Time:', new Date().toLocaleTimeString());
-        
 
 
-       
+
+
 
 
 
@@ -157,6 +157,9 @@ const imageHandler = async (req, res) => {
         if (url !== finalUrl || finalUrl.includes('img_index')) {
             console.log('URL was redirected');
             console.log('Current Time:', new Date().toLocaleTimeString());
+
+            page.reload({ waitUntil: 'domcontentloaded' });
+            console.log('Reloaded the page', new Date().toLocaleTimeString());
 
 
 
