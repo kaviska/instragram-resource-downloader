@@ -98,14 +98,14 @@ const imageHandler = async (req, res) => {
 
 
     // Preload a cookie to accept consent
-    await context.addCookies([
-        {
-            name: 'cookie_consent',
-            value: 'accepted', // The value depends on how the site stores consent
-            domain: 'https://www.instagram.com', // Change this to your target domain
-            path: '/'
+    const context = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        headers: {
+            'Accept-Language': 'en-US,en;q=0.9',
+            'DNT': '1',
+            'Upgrade-Insecure-Requests': '1',
         }
-    ]);
+    });
     const page = await context.newPage();
 
 
