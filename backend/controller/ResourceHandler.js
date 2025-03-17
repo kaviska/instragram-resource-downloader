@@ -3,18 +3,36 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const axios = require('axios');
 
+const proxies = [
+    { server: 'http://38.154.227.167:5868', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://38.153.152.244:9594', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://86.38.234.176:6630', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://173.211.0.148:6641', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://161.123.152.115:6360', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://216.10.27.159:6837', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://104.239.105.125:6655', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://198.105.101.92:5721', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://166.88.58.10:5735', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
+    { server: 'http://45.151.162.198:6600', username: 'guclrdex', password: 'kdtu4nfd8x7k' }
+];
+
+// Function to get a random proxy
+function getRandomProxy() {
+    const randomIndex = Math.floor(Math.random() * proxies.length);
+    return proxies[randomIndex];
+}
 
 
 const reelHandler = async (req, res) => {
     const url = req.body.data;
     console.log('URL:', url);
     console.log('Current Time:', new Date().toLocaleTimeString());
-    const proxy = {
-        server: 'http://38.154.227.167:5868', // proxy IP and port
-        username: 'guclrdex', // proxy username
-        password: 'kdtu4nfd8x7k' // proxy password
-    };
-    const browser = await chromium.launch({ headless: true ,proxy: proxy });
+    const proxy = getRandomProxy();
+    const browser = await chromium.launch({ headless: true , proxy: {
+        server: proxy.server,
+        username: proxy.username,
+        password: proxy.password
+    } });
     const page = await browser.newPage();
 
     // Navigate to the page containing the Blob URL
@@ -52,6 +70,7 @@ const imageHandler = async (req, res) => {
     console.log(`[URL Request Come:`, url);
     //console the cureent time with secon
     console.log('Current Time:', new Date().toLocaleTimeString());
+    const proxy= getRandomProxy();
 
     const browser = await chromium.launch({
         headless: true, args: [
@@ -67,6 +86,11 @@ const imageHandler = async (req, res) => {
             '--disable-renderer-backgrounding',
             '--disable-gl-drawing-for-tests',
         ],
+        proxy: {
+            server: proxy.server,
+            username: proxy.username,
+            password: proxy.password
+        },
         ignoreHTTPSErrors: true
     });
     const context = await browser.newContext(); // Create a new context
@@ -296,8 +320,19 @@ const imageHandler = async (req, res) => {
 
 const downloadReelHandler = async (req, res) => {
     const videoUrl = req.query.url;
+    const proxy = getRandomProxy(); // Get a random proxy
     try {
-        const response = await axios.get(videoUrl, { responseType: 'stream' });
+        const response = await axios.get(videoUrl, {
+            responseType: 'stream',
+            proxy: {
+            host: proxy.server.split('://')[1].split(':')[0],
+            port: parseInt(proxy.server.split(':')[2]),
+            auth: {
+                username: proxy.username,
+                password: proxy.password
+            }
+            }
+        });
         res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"');
         response.data.pipe(res);
     } catch (error) {
@@ -309,8 +344,20 @@ const downloadReelHandler = async (req, res) => {
 
 const downloadSingleImage = async (req, res) => {
     const imageUrl = req.query.url;
+    const proxy = getRandomProxy(); // Get a random proxy
+
     try {
-        const response = await axios.get(imageUrl, { responseType: 'stream' });
+        const response = await axios.get(imageUrl, {
+            responseType: 'stream',
+            proxy: {
+                host: proxy.server.split('://')[1].split(':')[0],
+                port: parseInt(proxy.server.split(':')[2]),
+                auth: {
+                    username: proxy.username,
+                    password: proxy.password
+                }
+            }
+        });
         res.setHeader('Content-Disposition', 'attachment; filename="image.jpg"');
         response.data.pipe(res);
     } catch (error) {
