@@ -6,12 +6,9 @@ import FAQ from "@/components/FAQ";
 import HowToCard from "@/components/HowToCard";
 import Footer from "@/components/Footer";
 import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
-interface CircularProgressWithLabelProps {
-  value: number;
-}
+
+
 
 // function CircularProgressWithLabel(props: CircularProgressWithLabelProps) {
 //   return (
