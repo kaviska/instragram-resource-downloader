@@ -320,18 +320,10 @@ const imageHandler = async (req, res) => {
 
 const downloadReelHandler = async (req, res) => {
     const videoUrl = req.query.url;
-    const proxy = getRandomProxy(); // Get a random proxy
     try {
         const response = await axios.get(videoUrl, {
             responseType: 'stream',
-            proxy: {
-            host: proxy.server.split('://')[1].split(':')[0],
-            port: parseInt(proxy.server.split(':')[2]),
-            auth: {
-                username: proxy.username,
-                password: proxy.password
-            }
-            }
+         
         });
         res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"');
         response.data.pipe(res);
@@ -344,19 +336,10 @@ const downloadReelHandler = async (req, res) => {
 
 const downloadSingleImage = async (req, res) => {
     const imageUrl = req.query.url;
-    const proxy = getRandomProxy(); // Get a random proxy
-
+  
     try {
         const response = await axios.get(imageUrl, {
-            responseType: 'stream',
-            proxy: {
-                host: proxy.server.split('://')[1].split(':')[0],
-                port: parseInt(proxy.server.split(':')[2]),
-                auth: {
-                    username: proxy.username,
-                    password: proxy.password
-                }
-            }
+            responseType: 'stream'
         });
         res.setHeader('Content-Disposition', 'attachment; filename="image.jpg"');
         response.data.pipe(res);
