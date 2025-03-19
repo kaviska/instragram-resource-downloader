@@ -144,7 +144,7 @@ export default function Temp() {
         method: "GET",
         headers: {
           "x-rapidapi-key":
-            "3b718006b9msh2d5d11044458229p18a7aejsn27634b6c412a",
+            "24b66111a6msh7f6928a49e023a0p18b833jsn5974c74b9b1c",
           "x-rapidapi-host":
             "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
         },
