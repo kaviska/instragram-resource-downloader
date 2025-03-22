@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="robots" content="noindex, nofollow" />
+     
         <title>{title}</title>
         <meta name="description" content={description} />
        {/* <!-- Google tag (gtag.js) --> */}

@@ -220,7 +220,7 @@ export default function Temp() {
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
-          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[300px]">
+          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[340px]">
             <input
               ref={inputRef}
               className="outline-none flex-1 h-12 px-3 py-2"
@@ -228,7 +228,7 @@ export default function Temp() {
             />
 
             <button
-              className="bg-[#AEAEAE] md:px-6 px-[-380px] md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+              className="bg-[#AEAEAE] md:px-6 px-2 mx-0 md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
               onClick={isPasted ? handleClear : handlePaste} // Toggle function
             >
               {isPasted ? (
