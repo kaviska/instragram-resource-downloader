@@ -220,7 +220,7 @@ export default function Temp() {
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
-          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[300px]">
+          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[340px]">
             <input
               ref={inputRef}
               className="outline-none flex-1 h-12 px-3 py-2"
