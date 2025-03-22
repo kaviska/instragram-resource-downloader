@@ -228,7 +228,7 @@ export default function Temp() {
             />
 
             <button
-              className="bg-[#AEAEAE] md:px-6 px-2 md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+              className="bg-[#AEAEAE] md:px-6 px-2 md:mx-0 mx-0 md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
               onClick={isPasted ? handleClear : handlePaste} // Toggle function
             >
               {isPasted ? (
