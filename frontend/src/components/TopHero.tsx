@@ -16,26 +16,32 @@ export default function TopHero() {
                 </div>
             </a>
 
-            <div className="flex cursor-pointer gap-2 justify-center items-center border-r border-white px-4">
-                <span className="text-white text-[18px]">Photo</span>
-                <div className="hidden md:block">
-                    <InsertPhotoIcon style={{ color: "white", fontSize: 18 }} />
+            <a href="/photo">
+                <div className="flex cursor-pointer gap-2 justify-center items-center border-r border-white px-4">
+                    <span className="text-white text-[18px]">Photo</span>
+                    <div className="hidden md:block">
+                        <InsertPhotoIcon style={{ color: "white", fontSize: 18 }} />
+                    </div>
                 </div>
-            </div>
+            </a>
 
-            <div className="flex cursor-pointer gap-2 justify-center items-center border-r border-white px-4">
-                <span className="text-white text-[18px]">Reel</span>
-                <div className="hidden md:block">
-                    <MovieCreationIcon style={{ color: "white", fontSize: 18 }} />
+            <a href="/reel">
+                <div className="flex cursor-pointer gap-2 justify-center items-center border-r border-white px-4">
+                    <span className="text-white text-[18px]">Reel</span>
+                    <div className="hidden md:block">
+                        <MovieCreationIcon style={{ color: "white", fontSize: 18 }} />
+                    </div>
                 </div>
-            </div>
+            </a>
 
-            <div className="flex cursor-pointer gap-2 justify-center items-center px-4">
-                <span className="text-white text-[18px]">Carousel</span>
-                <div className="hidden md:block">
-                    <ViewCarouselIcon style={{ color: "white", fontSize: 18 }} />
+            <a href="/carousel">
+                <div className="flex cursor-pointer gap-2 justify-center items-center px-4">
+                    <span className="text-white text-[18px]">Carousel</span>
+                    <div className="hidden md:block">
+                        <ViewCarouselIcon style={{ color: "white", fontSize: 18 }} />
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     );
 }
