@@ -8,8 +8,10 @@ export default function Nav() {
 <nav className=" ">
   <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
     <div>
-      <a href="#" className="text-lg font-bold">
+      <a href="#" className="text-lg font-bold flex gap-3">
         <Image src={Logo} alt="logo" width={60} height={60}></Image>
+        <h1 className='text-[#DA08C9] text-[24px] mt-4 block sm:block hidden'>SaveFromInsta</h1>
+
       </a>
     </div>
     <div></div>
