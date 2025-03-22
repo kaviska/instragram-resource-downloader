@@ -5,6 +5,7 @@ import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Script from 'next/script'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,16 +55,19 @@ export default function RootLayout({
         <title>{title}</title>
         <meta name="description" content={description} />
        {/* <!-- Google tag (gtag.js) --> */}
-       <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7SQ80LMCJ"></script>
-          <script>
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-Y7SQ80LMCJ"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-              gtag('config', 'G-Y7SQ80LMCJ');
-            `}
-          </script>
+          gtag('config', 'G-Y7SQ80LMCJ');
+        `}
+      </Script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
