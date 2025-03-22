@@ -23,8 +23,8 @@ export default function TopHero() {
                     pathname !== href && pathname === href  ? " opacity-80" : "" // Highlight Non active link
                 }`}
                 >
-                <span className="text-white text-[18px]">{label}</span>
-                <div className="hidden md:block">{icon}</div>
+                    <span className={`text-[18px] ${pathname === href ? "font-bold text-white" : "text-white"}`}>{label}</span>
+                    <div className={`hidden md:block ${pathname === href ? "font-bold" : ""}`}>{icon}</div>
                 </div>
             </a>
             ))}

@@ -7,10 +7,9 @@ export default function Footer() {
                 <div className="flex md:flex-row flex-col justify-center items-center md:justify-between">
 
 
-   <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="#">Privacy Policy</a></span>
-                                    <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="#">Conatct Us</a></span>
-                                    <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="#">About Us</a></span>
-                                    <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="#">Terms & Condition</a></span>
+   <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/privacy-policy">Privacy Policy</a></span>
+                                    <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/contact-us">Conatct Us</a></span>
+                                    <span><a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/terms-of-service">Terms of Service</a></span>
                 </div>
                 
                 <hr className="my-6 border-blueGray-300" />
