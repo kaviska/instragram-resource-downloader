@@ -2,12 +2,16 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import FAQ from "@/components/FAQ";
-import HowToCard from "@/components/HowToCard";
-import Footer from "@/components/Footer";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import TopHero from "@/components/TopHero";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import ClearIcon from "@mui/icons-material/Clear";
+import ContainSectionVideo from "@/components/ContainSectionVideo";
+
+import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import MovieCreationIcon from "@mui/icons-material/MovieCreation";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,19 +26,38 @@ export default function Temp() {
 
   const [downloadProgress, setDownloadProgress] = useState(0);
 
-  const [copiedText, setCopiedText] = useState(""); // State to store copied text
+  const [copiedText, setCopiedText] = useState(""); // Store copied text
+  const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Track button disabled state
 
-  const handleCopy = () => {
-    console.log("Copying text..." + copiedText);
+  const handlePaste = () => {
     navigator.clipboard
       .readText()
       .then((text) => {
-        setCopiedText(text); // Update state with copied text
+        setCopiedText(text);
+        setIsPasted(true); // Change button to "Clear"
         if (inputRef.current) {
-          inputRef.current.value = text; // Set input field value
+          inputRef.current.value = text;
         }
       })
       .catch((err) => console.error("Failed to read clipboard:", err));
+  };
+
+  const handleClear = () => {
+    console.log(copiedText)
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    setCopiedText("");
+    setIsPasted(false); // Change button back to "Paste"
+  };
+
+  const dissableButton = () => {
+    // Disable the button for 3 seconds
+    setIsButtonDisabled(true);
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 3000);
   };
 
   const handleStreamDownload = async (videoUrl: string, filename: string) => {
@@ -79,13 +102,20 @@ export default function Temp() {
     const data = inputRef.current?.value.trim();
     if (!data) return;
 
+    //check url is valid or not url should have www.instagram.com
+    if (!data.includes("www.instagram.com")) {
+      alert("Invalid URL. Please enter a valid Instagram URL.");
+      return;
+    }
+
+   
+
     setVideoUrl(null);
     setThumbnail(null);
     setFetchedId(null); // Reset fetchedId to allow new fetch request
     setMultipleImages(null);
     setImageUrl(null);
     setPogress(true);
-  
 
     try {
       const parsedUrl = new URL(data);
@@ -111,6 +141,7 @@ export default function Temp() {
       setId(newId);
     } catch (error) {
       console.error("Invalid URL", error);
+      alert("Invalid URL. Please enter a valid Instagram URL.");
     }
   };
 
@@ -172,6 +203,7 @@ export default function Temp() {
         setFetchedId(id); // Update fetchedId only after successful fetch
       } catch (error) {
         console.error("API Fetch Error:", error);
+        alert("Error fetching data. Please try again later.");
       }
     };
 
@@ -188,45 +220,78 @@ export default function Temp() {
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
-          <div className=" flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2  text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[300px]">
+          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[300px]">
             <input
               ref={inputRef}
               className="outline-none flex-1 h-12 px-3 py-2"
-              placeholder="Paste instagram link here"
+              placeholder="Paste Instagram link here"
             />
 
             <button
-              className="bg-[#AEAEAE]  md:px-6 px-3 md:text-[18px] text-[15px]  flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
-              onClick={handleCopy}
+              className="bg-[#AEAEAE] md:px-6 px-3 md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+              onClick={isPasted ? handleClear : handlePaste} // Toggle function
             >
-              <ContentCopyIcon style={{ color: "white", fontSize: "18px" }} />
-              <span>Paste</span>
+              {isPasted ? (
+                <>
+                  <ClearIcon style={{ color: "white", fontSize: "18px" }} />
+                  <span>Clear</span>
+                </>
+              ) : (
+                <>
+                  <ContentPasteIcon
+                    style={{ color: "white", fontSize: "18px" }}
+                  />
+                  <span>Paste</span>
+                </>
+              )}
             </button>
           </div>
 
           <button
-            className="bg-blue-500 hover:bg-blue-700 h-12 px-6 text-[18px] mt-4 flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
-            onClick={sendData}
+            className={`h-12 px-6 text-[18px] mt-4 flex gap-3 items-center justify-center py-2 rounded-[10px] ${
+              isButtonDisabled
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-700 text-white"
+            }`}
+            onClick={() => {
+              sendData();
+              dissableButton();
+            }}
+            disabled={isButtonDisabled} // Disable button based on state
           >
             <GetAppIcon style={{ color: "white", fontSize: "24px" }} />
             <span>Download</span>
             {pogress && <CircularProgress color="inherit" size={18} />}
           </button>
+           
         </div>
+       
       </div>
 
       {videoUrl && (
         <div className="mt-12 flex justify-center">
           <div className="flex flex-col items-center">
             {thumbnail && (
-              <Image
-                src={thumbnail}
-                alt="Thumbnail"
-                width={400}
-                height={400}
-                className="w-96 h-96 object-cover"
-                loading="lazy"
-              />
+             <div className="relative">
+             <Image
+               src={thumbnail}
+               alt="Thumbnail"
+               width={400}
+               height={500}
+               className=" object-cover"
+               loading="lazy"
+             />
+             <MovieCreationIcon
+               style={{
+                 color: "white",
+                 fontSize: 24,
+                 position: "absolute",
+                 top: 10,
+                 right: 10,
+               }}
+             />
+           </div>
+           
             )}
             {/* <button
               onClick={() => handleStreamDownload(videoUrl, "video.mp4")}
@@ -252,44 +317,81 @@ export default function Temp() {
         <div className="mt-12 flex gap-3 flex-wrap justify-center">
           {multipleImages.map((image, index) => (
             <div key={index} className="flex flex-col items-center">
+              <div className="relative">
               <Image
                 src={image}
                 alt="image"
                 width={400}
-                height={400}
+                height={500}
                 className="w-96 h-96 object-cover"
                 loading="lazy"
               />
+               <ViewCarouselIcon
+               style={{
+                 color: "white",
+                 fontSize: 24,
+                 position: "absolute",
+                 top: 10,
+                 right: 10,
+               }}
+             />
+              </div>
+             
               <button
-                onClick={() => handleStreamDownload(image, "picture.jpg")}
-                className="bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block"
+                onClick={() => {
+                  handleStreamDownload(image, "picture.jpg");
+                  dissableButton();
+                }}
+                className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
+                  isButtonDisabled
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500"
+                }`}
+                disabled={isButtonDisabled}
               >
                 Download Image
               </button>
-          
-
             </div>
-
-          
           ))}
-            <hr />
+          <hr />
         </div>
       )}
 
       {imageUrl && (
         <div className="mt-12 justify-center">
           <div className="flex flex-col items-center">
+            <div className="relative">
             <Image
               src={imageUrl}
               alt="image"
               width={400}
-              height={400}
+              height={500}
               className="w-96 h-96 object-cover"
               loading="lazy"
             />
+             <InsertPhotoIcon
+               style={{
+                 color: "white",
+                 fontSize: 24,
+                 position: "absolute",
+                 top: 10,
+                 right: 10,
+               }}
+             />
+
+            </div>
+           
             <button
-              onClick={() => handleStreamDownload(imageUrl, "picture.jpg")}
-              className="bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block"
+              onClick={() => {
+                handleStreamDownload(imageUrl, "picture.jpg");
+                dissableButton();
+              }}
+              className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
+                isButtonDisabled
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500"
+              }`}
+              disabled={isButtonDisabled}
             >
               Download Image
             </button>
@@ -297,179 +399,11 @@ export default function Temp() {
         </div>
       )}
 
-      <div className="container max-w-4xl px-6 py-10 mx-auto container-section">
-        <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-          How to Download Instagram Content?
-        </h1>
+      <ContainSectionVideo/>
 
-        <div className="flex    md:gap-9 gap-3">
-          <div className="flex flex-col gap-8  ">
-            <HowToCard
-              title="1. Copy the Instagram Link"
-              description="Open Instagram app or website and find the video, reel, story, or post you want to download.Tap on the three-dot menu on the right-left corner and select 'Copy Link.'"
-            />
+    
 
-            <HowToCard
-              title="2. Paste the Link on Save From Insta & Download"
-              description="Past the link on the above box and click download."
-            />
-
-            <HowToCard
-              title="3. Just Kidding There’s no step 3. Enjoy your content :)"
-              description="💡 Tip: You can easily paste the copied link by clicking on the ‘paste’ button."
-            />
-          </div>
-        </div>
-
-        <div className="mt-12">
-          <h1 className="text-2xl font-semibol text-gray-800 lg:text-3xl mb-5">
-            What is Save From Insta?
-          </h1>
-
-          <div className="   flex">
-            <p className="">
-              <b>Save From Insta</b> is your go-to{" "}
-              <b>Instagram video downloader</b> that allows you to{" "}
-              <b>
-                download Instagram reels, videos, photos, carousels, and stories
-              </b>{" "}
-              quickly and securely. Whether you want to{" "}
-              <b>save Insta reels, download IG videos,</b> or{" "}
-              <b>save Instagram stories with music</b> , our tool provides
-              high-quality downloads with just one click. No sign up or
-              installation needed. Just copy and paste the post link and
-              download.
-            </p>
-          </div>
-
-          <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
-            Why should you use Save From Insta?
-          </h1>
-
-          <div className="   flex ">
-            <ul className=" space-y-6">
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  No Login/No sign up: No login or sign up required, Just past
-                  the instagram post or reel link and download the media to your
-                  device.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Fast & Free</b> - Unlimited downloads without login or
-                  registration..{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>No Watermarks</b> – What you see is what you get!{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Works on Any Device</b> – Supports Mobile (Android, iPhone)
-                  , PC (Windows, Mac) and tablets.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Private & Secure</b> – We don’t store any user data.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Less ads</b> - Very minimal ads for fast and seamless
-                  service.{" "}
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <h1 className="text-2xl font-semibold  text-gray-800 lg:text-3xl mb-5 mt-12">
-          Features of Save From Insta ?
-        </h1>
-
-        <div className="flex   md:gap-9 gap-3">
-          <div className="flex flex-col gap-8 ">
-            <HowToCard
-              title="🔹 Online Instagram Video Downloader 
-"
-              description="Are you looking to download Instagram videos in HD? Save from Insta provides MP4 and high-resolution formats so you can download your favourite reels and videos.
-'"
-            />
-
-            <HowToCard
-              title="🔹 Save Instagram Stories & Highlights"
-              description="If you are looking to save one of your instagram Stories or Instagram Highlights, Our Instagram story saver allows you to save any public story or highlight with just 2 clicks.
- 
-.
-."
-            />
-
-            <HowToCard
-              title="🔹 Online Instagram Reels Downloader in HD
-"
-              description="With our online Instagram Reels downloader you can now download or save your favourite IG reels 
-"
-            />
-
-            <HowToCard
-              title="🔹 Online Instagram Profile Picture Downloader"
-              description="Want your Instagram Profile Photo on your device? Use our profile picture saver option and download your Instagram profile photo.."
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-3">
-        <FAQ
-          faq={[
-            {
-              question: "How can I download Instagram reels in HD?",
-              answer:
-              "Simply copy the Instagram reel link, paste it into our Instagram reels downloader, and hit Download. ",
-            },
-            {
-              question: "Can I download private Instagram stories?",
-              answer: "No, Unfortunately you can't download private instagram content. Only public Instagram content can be downloaded.",
-            },
-            {
-              question: "Does this work on mobile?",
-              answer:
-                "Yes! Our tool is optimized for Android, iPhone, iPad, and desktop. You can access our website through any web browser.",
-            },
-            {
-              question: "Where do my downloaded files go?",
-              answer: "Downloaded media will be saved on your device, on desktop you can access them from the downloads section on the web browser, On mobile media saves to the camera roll or gallery.",
-            },
-            {
-              question: "Can I download Instagram profile pictures?",
-              answer: "Yes, You can use our Instagram Profile Picture saver feature to use .",
-            },
-          ]}
-        />
-      </div>
-
-      <Footer />
+     
     </div>
   );
 }
