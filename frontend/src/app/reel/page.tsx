@@ -185,7 +185,7 @@ export default function Temp() {
         <TopHero />
 
         <h1 className="md:text-[32px] text-[28px] text-white  md:text-start text-center mt-5">
-          Instagram Content Download
+          Instagram Reel Download
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5">

@@ -6,35 +6,9 @@ import FAQ from "@/components/FAQ";
 import HowToCard from "@/components/HowToCard";
 import Footer from "@/components/Footer";
 import CircularProgress from "@mui/material/CircularProgress";
+import TopHero from "@/components/TopHero";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-
-
-
-// function CircularProgressWithLabel(props: CircularProgressWithLabelProps) {
-//   return (
-//     <Box sx={{ position: "relative", display: "inline-flex" }}>
-//       <CircularProgress variant="determinate" {...props} />
-//       <Box
-//         sx={{
-//           top: 0,
-//           left: 0,
-//           bottom: 0,
-//           right: 0,
-//           position: "absolute",
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-//         }}
-//       >
-//         <Typography
-//           variant="caption"
-//           component="div"
-//           sx={{ color: "text.secondary" }}
-//         >{`${Math.round(props.value)}%`}</Typography>
-//       </Box>
-//     </Box>
-//   );
-// }
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,8 +21,22 @@ export default function Temp() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
 
-
   const [downloadProgress, setDownloadProgress] = useState(0);
+
+  const [copiedText, setCopiedText] = useState(""); // State to store copied text
+
+  const handleCopy = () => {
+    console.log("Copying text..." + copiedText);
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setCopiedText(text); // Update state with copied text
+        if (inputRef.current) {
+          inputRef.current.value = text; // Set input field value
+        }
+      })
+      .catch((err) => console.error("Failed to read clipboard:", err));
+  };
 
   const handleStreamDownload = async (videoUrl: string, filename: string) => {
     try {
@@ -130,11 +118,9 @@ export default function Temp() {
   useEffect(() => {
     const fetchData = async () => {
       if (!id) return; // Prevent unnecessary API calls
-      
 
       console.log("ID", id);
       console.log("Is Reel", isReel);
-
 
       const url = isReel
         ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
@@ -144,7 +130,7 @@ export default function Temp() {
         method: "GET",
         headers: {
           "x-rapidapi-key":
-            "24b66111a6msh7f6928a49e023a0p18b833jsn5974c74b9b1c",
+            "3b718006b9msh2d5d11044458229p18a7aejsn27634b6c412a",
           "x-rapidapi-host":
             "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
         },
@@ -195,29 +181,38 @@ export default function Temp() {
 
   return (
     <div>
-      <div className="bg-[#DA08C9] flex flex-col justify-center items-center p-5">
-        <h1 className="md:text-[32px] text-[28px] text-white text-center">
-          Instagram Content Download
+      <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16">
+        <TopHero />
+
+        <h1 className="md:text-[32px] text-[28px] text-white  md:text-start text-center mt-5">
+          Instagram Photo Download
         </h1>
-        <p className="text-[18px] text-center text-white mt-3">
-          Download Any Content From Instagram
-        </p>
+
         <div className="flex md:flex-row flex-col md:gap-3 gap-5">
-          <input
-            ref={inputRef}
-            className="mt-4 md:w-[700px] w-[300px] h-12 px-3 py-2 rounded-[10px] text-black"
-            placeholder="Paste Instagram URL here"
-          />
+          <div className=" flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2  text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[300px]">
+            <input
+              ref={inputRef}
+              className="outline-none flex-1 h-12 px-3 py-2"
+              placeholder="Paste instagram link here"
+            />
+
             <button
-            className="bg-blue-500 h-12 px-20 text-[22px] mt-4 flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
-            onClick={sendData}
+              className="bg-blue-800  md:px-6 px-3 md:text-[18px] text-[15px]  flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+              onClick={handleCopy}
             >
-            <GetAppIcon style={{ color: "white", fontSize: "24px" }} />
-            <span>Send</span>
-            {pogress && <CircularProgress color="inherit" size={20} />}
-          
+              <ContentCopyIcon style={{ color: "white", fontSize: "18px" }} />
+              <span>Paste</span>
             </button>
-           
+          </div>
+
+          <button
+            className="bg-blue-500 h-12 px-6 text-[18px] mt-4 flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+            onClick={sendData}
+          >
+            <GetAppIcon style={{ color: "white", fontSize: "24px" }} />
+            <span>Download</span>
+            {pogress && <CircularProgress color="inherit" size={18} />}
+          </button>
         </div>
       </div>
 
@@ -226,12 +221,12 @@ export default function Temp() {
           <div className="flex flex-col items-center">
             {thumbnail && (
               <Image
-              src={thumbnail}
-              alt="Thumbnail"
-              width={400}
-              height={400}
-              className="w-96 h-96 object-cover"
-              loading="lazy"
+                src={thumbnail}
+                alt="Thumbnail"
+                width={400}
+                height={400}
+                className="w-96 h-96 object-cover"
+                loading="lazy"
               />
             )}
             {/* <button
@@ -241,7 +236,7 @@ export default function Temp() {
               <span className="mr-3">Download Video</span>
               <CircularProgressWithLabel value={downloadProgress} />
             </button> */}
-              <a
+            <a
               href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
                 videoUrl
               )}`}
@@ -264,8 +259,7 @@ export default function Temp() {
                 width={400}
                 height={400}
                 className="w-96 h-96 object-cover"
-              loading="lazy"
-
+                loading="lazy"
               />
               <button
                 onClick={() => handleStreamDownload(image, "picture.jpg")}
@@ -288,7 +282,6 @@ export default function Temp() {
               height={400}
               className="w-96 h-96 object-cover"
               loading="lazy"
-
             />
             <button
               onClick={() => handleStreamDownload(imageUrl, "picture.jpg")}
@@ -304,27 +297,140 @@ export default function Temp() {
         How to Download Instagram Content?
       </h1>
 
-      <div className="flex md:flex-row flex-col justify-center items-center md:gap-9 gap-3">
-        <HowToCard
-          howtoProps={{
-            title: "Copy the Instagram Link",
-            description:
-              "Open Instagram and copy the link of the reel, video, or post you want to download.",
-          }}
-        />
-        <HowToCard
-          howtoProps={{
-            title: "Paste & Download",
-            description: "Paste the link above and click Download.",
-          }}
-        />
-        <HowToCard
-          howtoProps={{
-            title: "Enjoy Your Content",
-            description:
-              "Download and save your favorite content effortlessly.",
-          }}
-        />
+      <div className="flex  justify-center items-center  md:gap-9 gap-3">
+        <div className="flex flex-col gap-8  justify-center items-center md:px-64">
+          <HowToCard
+            title="1. Copy the Instagram Link"
+            description="Open Instagram app or website and find the video, reel, story, or post you want to download.Tap on the three-dot menu on the right-left corner and select 'Copy Link.'"
+          />
+
+          <HowToCard
+            title="2. Paste the Link on Save From Insta & Download"
+            description="Past the link on the above box and click download."
+          />
+
+          <HowToCard
+            title="3. Just Kidding There’s no step 3. Enjoy your content :)"
+            description="💡 Tip: You can easily paste the copied link by clicking on the ‘paste’ button."
+          />
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
+          What is Save From Insta?
+        </h1>
+
+        <div className="   flex justify-center items-center text-center lg:px-64">
+          <p className="px-20">
+            <b>Save From Insta</b> is your go-to{" "}
+            <b>Instagram video downloader</b> that allows you to{" "}
+            <b>
+              download Instagram reels, videos, photos, carousels, and stories
+            </b>{" "}
+            quickly and securely. Whether you want to{" "}
+            <b>save Insta reels, download IG videos,</b> or{" "}
+            <b>save Instagram stories with music</b> , our tool provides
+            high-quality downloads with just one click. No sign up or
+            installation needed. Just copy and paste the post link and download.
+          </p>
+        </div>
+
+        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
+          Why should you use Save From Insta?
+        </h1>
+
+        <div className="   flex  md:px-64">
+          <ul className="px-20 space-y-6">
+            <li>
+              <span> ✔</span>
+              <span>
+                {" "}
+                No Login/No sign up: No login or sign up required, Just past the
+                instagram post or reel link and download the media to your
+                device.{" "}
+              </span>
+            </li>
+
+            <li>
+              <span> ✔</span>
+              <span>
+              {" "}
+              <b>Fast & Free</b> - Unlimited downloads without login or registration..{" "}
+              </span>
+            </li>
+
+            <li>
+              <span> ✔</span>
+              <span>
+              {" "}
+              <b>No Watermarks</b> – What you see is what you get!
+              {" "}
+              </span>
+            </li>
+
+            <li>
+              <span> ✔</span>
+              <span>
+              {" "}
+              <b>Works on Any Device</b> – Supports Mobile (Android, iPhone) , PC (Windows, Mac)  and tablets.
+              {" "}
+              </span>
+            </li>
+
+            <li>
+              <span> ✔</span>
+              <span>
+              {" "}
+              <b>Private & Secure</b> – We don’t store any user data.{" "}
+              </span>
+            </li>
+
+            <li>
+              <span> ✔</span>
+              <span>
+              {" "}
+              <b>Less ads</b> - Very minimal ads for fast and seamless service.{" "}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl my-8">
+      Features of Save From Insta
+      ?
+      </h1>
+
+      <div className="flex  justify-center items-center  md:gap-9 gap-3">
+        <div className="flex flex-col gap-8  justify-center items-center md:px-64">
+          <HowToCard
+            title="🔹 Online Instagram Video Downloader 
+"
+            description="Are you looking to download Instagram videos in HD? Save from Insta provides MP4 and high-resolution formats so you can download your favourite reels and videos.
+'"
+          />
+
+          <HowToCard
+            title="🔹 Save Instagram Stories & Highlights"
+            description="If you are looking to save one of your instagram Stories or Instagram Highlights, Our Instagram story saver allows you to save any public story or highlight with just 2 clicks.
+ 
+.
+."
+          />
+
+<HowToCard
+            title="🔹 Online Instagram Reels Downloader in HD
+"
+            description="With our online Instagram Reels downloader you can now download or save your favourite IG reels 
+"
+          />
+
+          <HowToCard
+            title="🔹 Online Instagram Profile Picture Downloader"
+            description="Want your Instagram Profile Photo on your device? Use our profile picture saver option and download your Instagram profile photo.."
+          />
+        </div>
       </div>
 
       <div className="mt-5">
