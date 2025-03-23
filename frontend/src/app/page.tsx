@@ -24,7 +24,7 @@ export default function Temp() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
 
-  const [downloadProgress, setDownloadProgress] = useState(0);
+  
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
@@ -62,38 +62,18 @@ export default function Temp() {
 
   const handleStreamDownload = async (videoUrl: string, filename: string) => {
     try {
-      const response = await fetch(videoUrl);
-      const contentLength = response.headers.get("Content-Length");
-      const total = parseInt(contentLength || "0", 10);
-      console.log(fetchedId);
-      console.log(downloadProgress);
-
-      if (!response.body) {
-        throw new Error("No body found in response");
+      console.log(fetchedId)
+      const response = await fetch(`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(videoUrl)}`);
+      if (!response.ok) {
+      throw new Error("Network response was not ok");
       }
-
-      const reader = response.body.getReader();
-      const chunks: Uint8Array[] = [];
-      let downloadedBytes = 0;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-        downloadedBytes += value.length;
-
-        // Update progress
-        const progress = (downloadedBytes / total) * 100;
-        setDownloadProgress(progress);
-      }
-
-      const blob = new Blob(chunks, { type: "video/mp4" });
+      const blob = await response.blob();
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(blob);
       downloadLink.download = filename;
       downloadLink.click();
     } catch (error) {
-      window.alert("Error downloading the video. Please try again later.");
+      window.alert("Error downloading the Content. Please try again later.");
       console.error("Error downloading the video:", error);
     }
   };
