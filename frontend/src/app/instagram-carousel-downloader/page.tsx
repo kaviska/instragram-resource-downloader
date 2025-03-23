@@ -23,8 +23,7 @@ export default function Temp() {
   const [multipleImages, setMultipleImages] = useState<string[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
-
- 
+  const [isLoad, setIsLoad] = useState<boolean>(false);
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
@@ -44,7 +43,7 @@ export default function Temp() {
   };
 
   const handleClear = () => {
-    console.log(copiedText)
+    console.log(copiedText);
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -62,11 +61,14 @@ export default function Temp() {
 
   const handleStreamDownload = async (videoUrl: string, filename: string) => {
     try {
-      console.log(fetchedId)
-
-      const response = await fetch(`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(videoUrl)}`);
+      console.log(fetchedId);
+      const response = await fetch(
+        `https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
+          videoUrl
+        )}`
+      );
       if (!response.ok) {
-      throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok");
       }
       const blob = await response.blob();
       const downloadLink = document.createElement("a");
@@ -79,9 +81,9 @@ export default function Temp() {
     }
   };
 
-
   const sendData = () => {
     const data = inputRef.current?.value.trim();
+    setIsPasted(true)
     if (!data) return;
 
     //check url is valid or not url should have www.instagram.com
@@ -90,14 +92,13 @@ export default function Temp() {
       return;
     }
 
-   
-
     setVideoUrl(null);
     setThumbnail(null);
     setFetchedId(null); // Reset fetchedId to allow new fetch request
     setMultipleImages(null);
     setImageUrl(null);
     setPogress(true);
+    setIsLoad(false);
 
     try {
       const parsedUrl = new URL(data);
@@ -152,6 +153,7 @@ export default function Temp() {
         const response = await fetch(url, options);
         const result = await response.json();
         console.log("API Result:", result);
+        setId(null); // Reset ID after successful fetch
         setPogress(false);
 
         if (isReel) {
@@ -159,8 +161,20 @@ export default function Temp() {
             result.image_versions2?.additional_candidates?.first_frame?.url ||
               null
           );
+         
           setVideoUrl(result.video_versions?.[0]?.url || null);
-        } else {
+          console.log("Video Url"+videoUrl);
+        } 
+        if(result.has_audio !== undefined && result.has_audio === true){
+          setThumbnail(
+            result.image_versions2?.additional_candidates?.first_frame?.url ||
+              null
+          );
+          setVideoUrl(result.video_versions?.[0]?.url || null);
+          setIsReel(true)
+          console.log("Video Url"+videoUrl);
+        }
+        else {
           console.log("Its a post");
           if (result.carousel_media) {
             for (let i = 0; i < result.carousel_media.length; i++) {
@@ -202,15 +216,15 @@ export default function Temp() {
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
-          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-64 md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[340px]">
+          <div className="flex items-center border mt-4 h-12 md:pr-1 pr-1  md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[340px]">
             <input
               ref={inputRef}
-              className="outline-none flex-1 h-12 px-3 py-2"
+              className="outline-none flex-1 h-12 px-3 py-2 "
               placeholder="Paste Instagram link here"
             />
 
             <button
-              className="bg-[#AEAEAE] md:px-6 px-2 mx-0 md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
+              className="bg-[#AEAEAE] md:px-6 px-2  md:text-[18px] text-[15px] flex gap-3 items-center justify-center text-white py-2 rounded-[10px]"
               onClick={isPasted ? handleClear : handlePaste} // Toggle function
             >
               {isPasted ? (
@@ -245,43 +259,63 @@ export default function Temp() {
             <span>Download</span>
             {pogress && <CircularProgress color="inherit" size={18} />}
           </button>
-           
         </div>
-       
       </div>
 
+
+
+
+
+
+
+
+
+      <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
       {videoUrl && (
         <div className="mt-12 flex justify-center">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col   items-center shadow-sm pb-4">
             {thumbnail && (
-             <div className="relative">
-             <Image
-               src={thumbnail}
-               alt="Thumbnail"
-               width={400}
-               height={500}
-               className=" object-cover"
-               loading="lazy"
-             />
-             <MovieCreationIcon
-               style={{
-                 color: "white",
-                 fontSize: 24,
-                 position: "absolute",
-                 top: 10,
-                 right: 10,
-               }}
-             />
-           </div>
-           
+                <div className="relative">
+                {isLoad === false && (
+                  <div>
+                  <div
+                    role="status"
+                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                  >
+                    <svg
+                    className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 16 20"
+                    >
+                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                    </svg>
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                  </div>
+                )}
+                <Image
+                  src={thumbnail}
+                  alt="Thumbnail"
+                  width={400}
+                  height={500}
+                  className="max-h-[400px] max-w-[500px] object-contain"
+                  onLoad={() => setIsLoad(true)}
+                />
+                <MovieCreationIcon
+                  style={{
+                  color: "white",
+                  fontSize: 24,
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  }}
+                />
+                </div>
             )}
-            {/* <button
-              onClick={() => handleStreamDownload(videoUrl, "video.mp4")}
-              className="bg-blue-500 px-3 text-white py-4 rounded-[10px] my-4"
-            >
-              <span className="mr-3">Download Video</span>
-              <CircularProgressWithLabel value={downloadProgress} />
-            </button> */}
+
             <a
               href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
                 videoUrl
@@ -296,29 +330,49 @@ export default function Temp() {
       )}
 
       {multipleImages && (
-        <div className="mt-12 flex gap-3 flex-wrap justify-center">
+        <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
           {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="relative">
-              <Image
-                src={image}
-                alt="image"
-                width={400}
-                height={500}
-                className="w-96 h-96 object-cover"
-                loading="lazy"
-              />
-               <ViewCarouselIcon
-               style={{
-                 color: "white",
-                 fontSize: 24,
-                 position: "absolute",
-                 top: 10,
-                 right: 10,
-               }}
-             />
+            <div key={index} className="flex flex-col items-center shadow-sm pb-4">
+              <div className="relative ">
+                {isLoad === false && (
+                  <div>
+                    <div
+                      role="status"
+                      className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                    >
+                      <svg
+                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                      </svg>
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                )}
+                <Image
+                  src={image}
+                  alt="image"
+                  width={300}
+                  height={375}
+                  className="w-96 h-96 object-cover"
+                  onLoad={() => setIsLoad(true)}
+                />
+                <ViewCarouselIcon
+                  style={{
+                    color: "white",
+                    fontSize: 24,
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                  }}
+                />
               </div>
-             
+
               <button
                 onClick={() => {
                   handleStreamDownload(image, "picture.jpg");
@@ -341,28 +395,47 @@ export default function Temp() {
 
       {imageUrl && (
         <div className="mt-12 justify-center">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center shadow-sm pb-4">
             <div className="relative">
-            <Image
-              src={imageUrl}
-              alt="image"
-              width={400}
-              height={500}
-              className="w-96 h-96 object-cover"
-              loading="lazy"
-            />
-             <InsertPhotoIcon
-               style={{
-                 color: "white",
-                 fontSize: 24,
-                 position: "absolute",
-                 top: 10,
-                 right: 10,
-               }}
-             />
-
+              {isLoad === false && (
+                <div>
+                  <div
+                    role="status"
+                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                  >
+                    <svg
+                      className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 20"
+                    >
+                      <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                      <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                    </svg>
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              )}
+              <Image
+                src={imageUrl}
+                alt="image"
+                width={400}
+                height={500}
+                className="w-96 h-96 object-cover"
+                onLoad={() => setIsLoad(true)}
+              />
+              <InsertPhotoIcon
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                }}
+              />
             </div>
-           
+
             <button
               onClick={() => {
                 handleStreamDownload(imageUrl, "picture.jpg");
@@ -381,11 +454,31 @@ export default function Temp() {
         </div>
       )}
 
-      <ContainSectionCarousel/>
-
-    
+      </div>
 
      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <ContainSectionCarousel />
     </div>
   );
 }
