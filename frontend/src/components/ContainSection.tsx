@@ -34,17 +34,7 @@ export default function ContainSection(){
 
           <div className="   flex">
             <p className="">
-              <b>Save From Insta</b> is your go-to{" "}
-              <b>Instagram video downloader</b> that allows you to{" "}
-              <b>
-                download Instagram reels, videos, photos, carousels, and stories
-              </b>{" "}
-              quickly and securely. Whether you want to{" "}
-              <b>save Insta reels, download IG videos,</b> or{" "}
-              <b>save Instagram stories with music</b> , our tool provides
-              high-quality downloads with just one click. No sign up or
-              installation needed. Just copy and paste the post link and
-              download.
+              <>Save From Insta</> is your go-to Instagram video downloader that allows you to download Instagram reels, videos, photos, carousels, and stories quickly and securely. Whether you want to save Insta reels, download IG videos, or save Instagram stories with music, our tool provides high-quality downloads with just one click. No sign up or installation needed. Just copy and paste the post link and download.
             </p>
           </div>
 
