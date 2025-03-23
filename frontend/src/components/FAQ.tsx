@@ -15,9 +15,9 @@ export default function FAQ({ faq }: FAQProps) {
   return (
     <section className="bg-white">
       <div className="container max-w-4xl px-6  mx-auto">
-        <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl">
+        <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl">
           Frequently Asked Questions
-        </h1>
+        </h2>
 
         <div className="mt-8 space-y-8">
           {faq.map((faqItem, index) => (
@@ -26,7 +26,7 @@ export default function FAQ({ faq }: FAQProps) {
                 className="flex items-center justify-between w-full p-6"
                 onClick={() => toggleFAQ(index)}
               >
-                <h1 className="font-semibold text-gray-700">{faqItem.question}</h1>
+                <p className="font-semibold text-gray-700">{faqItem.question}</p>
 
                 <span className="text-gray-700 bg-gray-200 rounded-full p-2">
                   {openIndex === index ? (

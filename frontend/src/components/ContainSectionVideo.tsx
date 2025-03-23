@@ -4,9 +4,9 @@ export default function ContainSectionVideo() {
   return (
     <div>
       <div className="container max-w-4xl px-6 py-10 mx-auto container-section">
-        <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
           How to Download Instagram Videos with Save From Insta?
-        </h1>
+        </h2>
         <p className="mb-4">
           Downloading Instagram videos has never been easier! With Save From
           Insta, you’re just three steps away from saving your favorite videos:
@@ -30,9 +30,9 @@ export default function ContainSectionVideo() {
         </div>
 
         <div className="mt-12">
-          <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
             SaveFromInsta - Instagram Video Downloader
-          </h1>
+          </h2>
 
           <div className="   flex">
             <p className="">

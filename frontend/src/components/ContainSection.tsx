@@ -4,9 +4,9 @@ export default function ContainSection(){
     return(
         <div>
               <div className="container max-w-4xl px-6 py-10 mx-auto container-section">
-        <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
           How to Download Instagram Content?
-        </h1>
+        </h2>
 
         <div className="flex    md:gap-9 gap-3">
           <div className="flex flex-col gap-8  ">
@@ -28,9 +28,9 @@ export default function ContainSection(){
         </div>
 
         <div className="mt-12">
-          <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
             What is Save From Insta?
-          </h1>
+          </h2>
 
           <div className="   flex">
             <p className="">
@@ -48,9 +48,9 @@ export default function ContainSection(){
             </p>
           </div>
 
-          <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
             Why should you use Save From Insta?
-          </h1>
+          </h2>
 
           <div className="   flex ">
             <ul className=" space-y-6">
@@ -110,9 +110,9 @@ export default function ContainSection(){
           </div>
         </div>
 
-        <h1 className="text-2xl font-semibold  text-gray-800 lg:text-3xl mb-5 mt-12">
+        <h2 className="text-2xl font-semibold  text-gray-800 lg:text-3xl mb-5 mt-12">
           Features of Save From Insta 
-        </h1>
+        </h2>
 
         <div className="flex   md:gap-9 gap-3">
           <div className="flex flex-col gap-8 ">

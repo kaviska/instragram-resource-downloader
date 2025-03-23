@@ -9,7 +9,7 @@ export default function Nav() {
         <div>
           <Link href="/" className="text-lg font-bold flex gap-3">
             <Image src={Logo} alt="logo" width={60} height={60} />
-            <h1 className='text-[#DA08C9] md:text-[24px] text-[20px] mt-4 '>SaveFromInsta</h1>
+            <h2 className='text-[#DA08C9] md:text-[24px] text-[20px] mt-4 '>SaveFromInsta</h2>
           </Link>
         </div>
         <div></div>
