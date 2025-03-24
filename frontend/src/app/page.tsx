@@ -299,9 +299,9 @@ export default function Temp() {
                 <Image
                   src={thumbnail}
                   alt="Thumbnail"
-                  width={400}
-                  height={500}
-                  className="max-h-[400px] max-w-[500px] object-contain"
+                  width={300}
+                  height={375}
+                  className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px] "
                   onLoad={() => setIsLoad(true)}
                 />
                 <MovieCreationIcon
@@ -359,7 +359,7 @@ export default function Temp() {
                   alt="image"
                   width={300}
                   height={375}
-                  className="w-96 h-96 object-cover"
+                  className="w-[300px] h-[375px] object-cover"
                   onLoad={() => setIsLoad(true)}
                 />
                 <ViewCarouselIcon
@@ -420,9 +420,9 @@ export default function Temp() {
               <Image
                 src={imageUrl}
                 alt="image"
-                width={400}
-                height={500}
-                className="w-96 h-96 object-cover"
+                width={300}
+                height={375}
+                className="w-[300px] h-[375px] object-cover "
                 onLoad={() => setIsLoad(true)}
               />
               <InsertPhotoIcon

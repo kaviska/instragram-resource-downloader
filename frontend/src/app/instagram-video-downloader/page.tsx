@@ -271,191 +271,190 @@ export default function Temp() {
 
 
       <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
-      {videoUrl && (
-        <div className="mt-12 flex justify-center">
-          <div className="flex flex-col   items-center shadow-sm pb-4">
-            {thumbnail && (
-                <div className="relative">
-                {isLoad === false && (
-                  <div>
-                  <div
-                    role="status"
-                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                  >
-                    <svg
-                    className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 16 20"
-                    >
-                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                    </svg>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                  </div>
-                )}
-                <Image
-                  src={thumbnail}
-                  alt="Thumbnail"
-                  width={400}
-                  height={500}
-                  className="max-h-[400px] max-w-[500px] object-contain"
-                  onLoad={() => setIsLoad(true)}
-                />
-                <MovieCreationIcon
-                  style={{
-                  color: "white",
-                  fontSize: 24,
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  }}
-                />
-                </div>
-            )}
-
-            <a
-              href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
-                videoUrl
-              )}`}
-              download="video.mp4"
-              className="bg-blue-500 px-3 text-white py-[10px] rounded-[10px] my-4 justify-self-center inline-block"
-            >
-              Download Video
-            </a>
-          </div>
-        </div>
-      )}
-
-      {multipleImages && (
-        <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
-          {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center shadow-sm pb-4">
-              <div className="relative ">
-                {isLoad === false && (
-                  <div>
-                    <div
-                      role="status"
-                      className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                    >
-                      <svg
-                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 16 20"
-                      >
-                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                      </svg>
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  </div>
-                )}
-                <Image
-                  src={image}
-                  alt="image"
-                  width={300}
-                  height={375}
-                  className="w-96 h-96 object-cover"
-                  onLoad={() => setIsLoad(true)}
-                />
-                <ViewCarouselIcon
-                  style={{
-                    color: "white",
-                    fontSize: 24,
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                  }}
-                />
-              </div>
-
-              <button
-                onClick={() => {
-                  handleStreamDownload(image, "picture.jpg");
-                  dissableButton();
-                }}
-                className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
-                  isButtonDisabled
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500"
-                }`}
-                disabled={isButtonDisabled}
-              >
-                Download Image
-              </button>
-            </div>
-          ))}
-          <hr />
-        </div>
-      )}
-
-      {imageUrl && (
-        <div className="mt-12 justify-center">
-          <div className="flex flex-col items-center shadow-sm pb-4">
-            <div className="relative">
-              {isLoad === false && (
-                <div>
-                  <div
-                    role="status"
-                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                  >
-                    <svg
-                      className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 20"
-                    >
-                      <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                      <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                    </svg>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              )}
-              <Image
-                src={imageUrl}
-                alt="image"
-                width={400}
-                height={500}
-                className="w-96 h-96 object-cover"
-                onLoad={() => setIsLoad(true)}
-              />
-              <InsertPhotoIcon
-                style={{
-                  color: "white",
-                  fontSize: 24,
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                }}
-              />
-            </div>
-
-            <button
-              onClick={() => {
-                handleStreamDownload(imageUrl, "picture.jpg");
-                dissableButton();
-              }}
-              className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
-                isButtonDisabled
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500"
-              }`}
-              disabled={isButtonDisabled}
-            >
-              Download Image
-            </button>
-          </div>
-        </div>
-      )}
-
-      </div>
-
+           {videoUrl && (
+             <div className="mt-12 flex justify-center">
+               <div className="flex flex-col   items-center shadow-sm pb-4">
+                 {thumbnail && (
+                     <div className="relative">
+                     {isLoad === false && (
+                       <div>
+                       <div
+                         role="status"
+                         className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                       >
+                         <svg
+                         className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                         aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         viewBox="0 0 16 20"
+                         >
+                         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                         <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                         </svg>
+                         <span className="sr-only">Loading...</span>
+                       </div>
+                       </div>
+                     )}
+                     <Image
+                       src={thumbnail}
+                       alt="Thumbnail"
+                       width={300}
+                       height={375}
+                       className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px] "
+                       onLoad={() => setIsLoad(true)}
+                     />
+                     <MovieCreationIcon
+                       style={{
+                       color: "white",
+                       fontSize: 24,
+                       position: "absolute",
+                       top: 10,
+                       right: 10,
+                       }}
+                     />
+                     </div>
+                 )}
+     
+                 <a
+                   href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
+                     videoUrl
+                   )}`}
+                   download="video.mp4"
+                   className="bg-blue-500 px-3 text-white py-[10px] rounded-[10px] my-4 justify-self-center inline-block"
+                 >
+                   Download Video
+                 </a>
+               </div>
+             </div>
+           )}
+     
+           {multipleImages && (
+             <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
+               {multipleImages.map((image, index) => (
+                 <div key={index} className="flex flex-col items-center shadow-sm pb-4">
+                   <div className="relative ">
+                     {isLoad === false && (
+                       <div>
+                         <div
+                           role="status"
+                           className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                         >
+                           <svg
+                             className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                             aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor"
+                             viewBox="0 0 16 20"
+                           >
+                             <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                             <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                           </svg>
+                           <span className="sr-only">Loading...</span>
+                         </div>
+                       </div>
+                     )}
+                     <Image
+                       src={image}
+                       alt="image"
+                       width={300}
+                       height={375}
+                       className="w-[300px] h-[375px] object-cover"
+                       onLoad={() => setIsLoad(true)}
+                     />
+                     <ViewCarouselIcon
+                       style={{
+                         color: "white",
+                         fontSize: 24,
+                         position: "absolute",
+                         top: 10,
+                         right: 10,
+                       }}
+                     />
+                   </div>
+     
+                   <button
+                     onClick={() => {
+                       handleStreamDownload(image, "picture.jpg");
+                       dissableButton();
+                     }}
+                     className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
+                       isButtonDisabled
+                         ? "bg-gray-400 cursor-not-allowed"
+                         : "bg-blue-500"
+                     }`}
+                     disabled={isButtonDisabled}
+                   >
+                     Download Image
+                   </button>
+                 </div>
+               ))}
+               <hr />
+             </div>
+           )}
+     
+           {imageUrl && (
+             <div className="mt-12 justify-center">
+               <div className="flex flex-col items-center shadow-sm pb-4">
+                 <div className="relative">
+                   {isLoad === false && (
+                     <div>
+                       <div
+                         role="status"
+                         className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                       >
+                         <svg
+                           className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                           aria-hidden="true"
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="currentColor"
+                           viewBox="0 0 16 20"
+                         >
+                           <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                           <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                         </svg>
+                         <span className="sr-only">Loading...</span>
+                       </div>
+                     </div>
+                   )}
+                   <Image
+                     src={imageUrl}
+                     alt="image"
+                     width={300}
+                     height={375}
+                     className="w-[300px] h-[375px] object-cover "
+                     onLoad={() => setIsLoad(true)}
+                   />
+                   <InsertPhotoIcon
+                     style={{
+                       color: "white",
+                       fontSize: 24,
+                       position: "absolute",
+                       top: 10,
+                       right: 10,
+                     }}
+                   />
+                 </div>
+     
+                 <button
+                   onClick={() => {
+                     handleStreamDownload(imageUrl, "picture.jpg");
+                     dissableButton();
+                   }}
+                   className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
+                     isButtonDisabled
+                       ? "bg-gray-400 cursor-not-allowed"
+                       : "bg-blue-500"
+                   }`}
+                   disabled={isButtonDisabled}
+                 >
+                   Download Image
+                 </button>
+               </div>
+             </div>
+           )}
+     
+           </div>
      
 
 
