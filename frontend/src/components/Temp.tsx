@@ -222,7 +222,7 @@ export default function Temp() {
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">
-        <TopHero />
+        {/* <TopHero /> */}
 
         <h1 className="md:text-[32px] text-[28px] text-white  md:text-start text-center mt-8 ">
           Instagram Content Downloader
@@ -498,7 +498,7 @@ export default function Temp() {
 
 
 
-      <ContainSection />
+     
     </div>
   );
 }

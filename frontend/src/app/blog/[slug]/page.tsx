@@ -1,9 +1,11 @@
+
 import Image from "next/image";
 import ProfileImage from "../../../../public/profile.avif";
 import { client } from "../../lib/sanity";
 import { urlFor } from "../../lib/sanity";
 import { PortableText } from "@portabletext/react";
 import FAQBlog from "@/components/FAQBlog";
+import Temp from "@/components/Temp";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -27,6 +29,7 @@ async function getBlogBySlug(slug: string[]) {
 export async function generateMetadata({ params }: PageProps) {
   const resolvedParams = await params;
   const blog = await getBlogBySlug(resolvedParams.slug);
+  console.log(blog);
   if (!blog || blog.length === 0) {
     return {
       title: "Blog Post",
@@ -57,9 +60,14 @@ export default async function Page({ params }: PageProps) {
   const blog = await getBlogBySlug(resolvedParams.slug);
 
   const isSidebarAvailable = blog[0].sidebar !== false;
+  const isDownloadAvailable = blog[0].download !== false;
 
   return (
     <div>
+      {
+        isDownloadAvailable && ( <Temp></Temp> )
+      }
+     
       <div className="container mx-auto max-w-6xl">
         <h1 className="text-black text-[40px] font-bold md:max-w-[50%]">
           {blog[0].title}

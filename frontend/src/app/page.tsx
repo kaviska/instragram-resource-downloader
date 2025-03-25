@@ -1,4 +1,3 @@
-import Card from "@/components/Card";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import HowToCard from "@/components/HowToCard";
