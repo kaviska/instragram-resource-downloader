@@ -61,12 +61,12 @@ export default async function Home() {
       <div className="flex md:flex-row flex-col md:gap-20 gap-3 align-middle items-center justify-center ">
         {blogs.slice(0, 3).map((blog: Blog) => (
           <a href={`/blog/${blog.slug}`} key={blog._id}>
-            <Card
+            {/* <Card
               CoverImage={blog.image}
               Title={blog.title}
               Description={blog.titleDescription}
               Author={blog.author}
-            />
+            /> */}
           </a>
         ))}
       </div>

@@ -64,6 +64,18 @@ export default {
       description: 'Set as featured blog. Only one blog can be featured at a time.',
     },
     {
+      name:'download',
+      title:' Show Download',
+      type:'boolean',
+      description:'Show Download Section'
+    },
+    {
+      name: 'sidebar',
+      title: 'Sidebar Availability',
+      type: 'boolean',
+      description: 'Set as sidebar Available or not.',
+    },
+    {
       name: 'tags',
       title: 'Tags',
       type: 'array',
