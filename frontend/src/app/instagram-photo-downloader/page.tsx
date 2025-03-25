@@ -20,10 +20,11 @@ export default function Temp() {
   const [id, setId] = useState<string | null>(null);
   const [fetchedId, setFetchedId] = useState<string | null>(null); // Prevent duplicate API calls
   const [isReel, setIsReel] = useState<boolean>(false);
-  const [multipleImages, setMultipleImages] = useState<string[] | null>(null);
+  const [multipleImages, setMultipleImages] = useState<{ url: string; isVideo: boolean; videoUrl?: string }[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
+  
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
@@ -182,10 +183,24 @@ export default function Temp() {
                 "Carousel Media:",
                 result.carousel_media[i].image_versions2.candidates[0].url
               );
-              setMultipleImages((prevImages) => [
-                ...(prevImages || []),
-                result.carousel_media[i].image_versions2.candidates[0].url,
-              ]);
+              if (result.carousel_media[i].video_versions) {
+                setMultipleImages((prevImages) => [
+                  ...(prevImages || []),
+                  {
+                    url: result.carousel_media[i].image_versions2.candidates[0].url,
+                    isVideo: true,
+                    videoUrl: result.carousel_media[i].video_versions[0].url,
+                  },
+                ]);
+              } else {
+                setMultipleImages((prevImages) => [
+                  ...(prevImages || []),
+                  {
+                    url: result.carousel_media[i].image_versions2.candidates[0].url,
+                    isVideo: false,
+                  },
+                ]);
+              }
             }
           } else {
             console.log(
@@ -269,30 +284,31 @@ export default function Temp() {
 
 
 
- <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
+
+      <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
       {videoUrl && (
         <div className="mt-12 flex justify-center">
           <div className="flex flex-col   items-center shadow-sm pb-4">
             {thumbnail && (
                 <div className="relative">
-                {isLoad === false && (
+               {isLoad === false && (
                   <div>
-                  <div
-                    role="status"
-                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                  >
-                    <svg
-                    className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 16 20"
+                    <div
+                      role="status"
+                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
                     >
-                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                    </svg>
-                    <span className="sr-only">Loading...</span>
-                  </div>
+                      <svg
+                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                      </svg>
+                      <span className="sr-only">Loading...</span>
+                    </div>
                   </div>
                 )}
                 <Image
@@ -331,13 +347,13 @@ export default function Temp() {
       {multipleImages && (
         <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
           {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center shadow-sm pb-4">
-              <div className="relative ">
+            <div key={index} className="flex flex-col items-center pb-4">
+              <div className="relative  shadow-sm ">
                 {isLoad === false && (
                   <div>
                     <div
                       role="status"
-                      className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
                     >
                       <svg
                         className="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -354,7 +370,7 @@ export default function Temp() {
                   </div>
                 )}
                 <Image
-                  src={image}
+                  src={image.url}
                   alt="image"
                   width={300}
                   height={375}
@@ -371,21 +387,26 @@ export default function Temp() {
                   }}
                 />
               </div>
+             
 
-              <button
+                <button
                 onClick={() => {
-                  handleStreamDownload(image, "picture.jpg");
+                  if (image.isVideo && image.videoUrl) {
+                  handleStreamDownload(image.videoUrl, "video.mp4");
+                  } else {
+                  handleStreamDownload(image.url, "picture.jpg");
+                  }
                   dissableButton();
                 }}
                 className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
                   isButtonDisabled
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500"
                 }`}
                 disabled={isButtonDisabled}
-              >
-                Download Image
-              </button>
+                >
+                {image.isVideo ? "Download Video" : "Download Image"}
+                </button>
             </div>
           ))}
           <hr />
@@ -394,33 +415,32 @@ export default function Temp() {
 
       {imageUrl && (
         <div className="mt-12 justify-center">
-          <div className="flex flex-col items-center shadow-sm pb-4">
-            <div className="relative">
-              {isLoad === false && (
-                <div>
-                  <div
-                    role="status"
-                    className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                  >
-                    <svg
-                      className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 20"
+          <div className="flex flex-col items-center  pb-4">
+            <div className="relative bg-slate-500">
+            {isLoad === false && (
+                  <div>
+                    <div
+                      role="status"
+                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
                     >
-                      <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                      <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                    </svg>
-                    <span className="sr-only">Loading...</span>
+                      <svg
+                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 20"
+                      >
+                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                      </svg>
+                      <span className="sr-only">Loading...</span>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               <Image
                 src={imageUrl}
                 alt="image"
-                width={300}
-                height={375}
+               
                 className="w-[300px] h-[375px] object-cover "
                 onLoad={() => setIsLoad(true)}
               />
@@ -434,7 +454,7 @@ export default function Temp() {
                 }}
               />
             </div>
-
+            <div className="shadow-sm w-[300px] flex justify-center ">
             <button
               onClick={() => {
                 handleStreamDownload(imageUrl, "picture.jpg");
@@ -449,6 +469,9 @@ export default function Temp() {
             >
               Download Image
             </button>
+            </div>
+
+            
           </div>
         </div>
       )}
