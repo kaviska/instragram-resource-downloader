@@ -7,6 +7,8 @@ import { PortableText } from "@portabletext/react";
 import FAQBlog from "@/components/FAQBlog";
 import Temp from "@/components/Temp";
 
+//comented out the import of client
+
 interface PageProps {
   params: Promise<{ slug: string[] }>;
 }
