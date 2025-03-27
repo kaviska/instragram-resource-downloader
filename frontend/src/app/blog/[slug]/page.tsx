@@ -98,8 +98,8 @@ export default async function Page({ params }: PageProps) {
         ),
       },
       block: {
-        h2: ({ children, node }) => (
-          <h2 id={node._key} className="scroll-mt-20">
+        h2: ({ children, value }) => (
+          <h2 id={value._key} className="scroll-mt-20">
             {children}
           </h2>
         ),
