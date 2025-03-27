@@ -1,6 +1,5 @@
 
 import Image from "next/image";
-import ProfileImage from "../../../../public/profile.avif";
 import { client } from "../../lib/sanity";
 import { urlFor } from "../../lib/sanity";
 import { PortableText } from "@portabletext/react";
@@ -160,7 +159,7 @@ export default async function Page({ params }: PageProps) {
                 <h3 className="font-semibold mt-3">Categories</h3>
                 {blog[0].categories && blog[0].categories.length > 0 ? (
                   <ul>
-                    {blog[0].categories.map((category, index) => (
+                    {blog[0].categories.map((category: string, index: number) => (
                       <li key={index}>{category}</li>
                     ))}
                   </ul>
@@ -174,7 +173,7 @@ export default async function Page({ params }: PageProps) {
                 <h3 className="font-semibold mt-3">Tags</h3>
                 {blog[0].tags && blog[0].tags.length > 0 ? (
                   <ul className="flex flex-wrap gap-2">
-                    {blog[0].tags.map((tag, index) => (
+                    {blog[0].tags.map((tag: string, index: number) => (
                       <li
                         key={index}
                         className="bg-gray-200 text-gray-700 px-2 py-1 rounded"

@@ -10,6 +10,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import TopHero from '@/components/TopHero';
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -222,11 +223,9 @@ export default function Temp() {
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">
-        {/* <TopHero /> */}
+        <TopHero />
 
-        <h1 className="md:text-[32px] text-[28px] text-white  md:text-start text-center mt-8 ">
-          Instagram Content Downloader
-        </h1>
+      
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
           <div className="flex items-center border mt-4 h-12 md:pr-1 pr-1  md:py-2 text-black bg-white rounded-[10px] overflow-hidden md:w-[700px] w-[340px]">
