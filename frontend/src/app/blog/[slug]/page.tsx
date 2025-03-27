@@ -6,6 +6,7 @@ import { urlFor } from "../../lib/sanity";
 import { PortableText } from "@portabletext/react";
 import FAQBlog from "@/components/FAQBlog";
 import Temp from "@/components/Temp";
+import Catalog from "@/components/Catalog";
 
 //comented out the import of client
 
@@ -70,7 +71,7 @@ export default async function Page({ params }: PageProps) {
         isDownloadAvailable && ( <Temp></Temp> )
       }
      
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-6xl  md:px-0 px-12">
         <h1 className="text-black text-[40px] font-bold md:max-w-[50%]">
           {blog[0].title}
         </h1>
@@ -84,23 +85,30 @@ export default async function Page({ params }: PageProps) {
               className="w-full object-cover rounded-top"
               alt=""
             />
-
-            <div id="content" className="my-4 prose max-w-none">
-              <PortableText
-                value={blog[0].body}
-                components={{
-                  types: {
-                    image: ({ value }) => (
-                      <img
-                        src={urlFor(value.asset).url()}
-                        alt={value.alt || "Blog Image"}
-                        className="w-full max-h-[500px] object-cover rounded"
-                      />
-                    ),
-                  },
-                }}
-              />
-            </div>
+<div id="content" className="my-4 prose max-w-none">
+  <PortableText
+    value={blog[0].body}
+    components={{
+      types: {
+        image: ({ value }) => (
+          <img
+            src={urlFor(value.asset).url()}
+            alt={value.alt || "Blog Image"}
+            className="w-full max-h-[500px] object-cover rounded"
+          />
+        ),
+      },
+      block: {
+        h2: ({ children, node }) => (
+          <h2 id={node._key} className="scroll-mt-20">
+            {children}
+          </h2>
+        ),
+        normal: ({ children }) => <p>{children}</p>,
+      },
+    }}
+  />
+</div>
             <div className="faq mt-4">
               {blog[0].faq && <FAQBlog faq={blog[0].faq}></FAQBlog>}
             </div>
@@ -119,16 +127,9 @@ export default async function Page({ params }: PageProps) {
         </div>
 
         {isSidebarAvailable && (
-          <div className="md:w-[25%] sidebar md:flex justify-end hidden w-[0%]">
+          <div className="md:w-[25%] sidebar pl-10  md:flex justify-end hidden w-[0%]">
             <div>
-              <div className="flex flex-col gap-2 font-medium cursor-pointer">
-                {blog[0].catalog &&
-                  blog[0].catalog.map((item: string, index: number) => (
-                    <span key={index} className="font-bold">
-                      {item}
-                    </span>
-                  ))}
-              </div>
+             <Catalog blog={blog}></Catalog>
               <hr className="my-3" />
 
               <div className="user-info mt-4">
@@ -147,28 +148,46 @@ export default async function Page({ params }: PageProps) {
               </div>
 
               <div className="contributors mt-4">
-                <h3 className="font-semibold my-3">Contributors</h3>
-                <div className="flex items-center gap-4">
-                  <Image
-                    src={ProfileImage}
-                    alt="profile-image"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  ></Image>
-                  <span>Kaviska Dilshan</span>
-                </div>
-                <div className="flex items-center gap-4 mt-2">
-                  <Image
-                    src={ProfileImage}
-                    alt="profile-image"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  ></Image>
-                  <span>Kaviska Dilshan</span>
-                </div>
+              <h3 className="font-semibold mt-3">Published Date</h3>
+              <p>{new Date(blog[0].publishedAt).toLocaleDateString()}</p>
+                
+               
+               
+              
               </div>
+              <hr className="my-3" />
+              <div className="categories mt-4">
+                <h3 className="font-semibold mt-3">Categories</h3>
+                {blog[0].categories && blog[0].categories.length > 0 ? (
+                  <ul>
+                    {blog[0].categories.map((category, index) => (
+                      <li key={index}>{category}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No categories available</p>
+                )}
+              </div>
+
+              <hr className="my-3" />
+              <div className="tags mt-4">
+                <h3 className="font-semibold mt-3">Tags</h3>
+                {blog[0].tags && blog[0].tags.length > 0 ? (
+                  <ul className="flex flex-wrap gap-2">
+                    {blog[0].tags.map((tag, index) => (
+                      <li
+                        key={index}
+                        className="bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No tags available</p>
+                )}
+              </div>
+
             </div>
           </div>
         )}
