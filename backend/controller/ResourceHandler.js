@@ -350,6 +350,32 @@ const downloadSingleImage = async (req, res) => {
 
 
 
+const fetchRequesthandler=async (req,res)=>{
+    const { type, id } = req.params;
+  
+    const url = type === 'reel'
+      ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
+      : `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/post_by_shortcode?shortcode=${id}`;
+  
+    const options = {
+      headers: {
+        'x-rapidapi-key': '3b718006b9msh2d5d11044458229p18a7aejsn27634b6c412a',
+        'x-rapidapi-host': 'instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com',
+      },
+    };
+  
+    try {
+      // Use axios to fetch the data
+      const response = await axios.get(url, options);
+      
+      // Send the result back to the frontend
+      res.json(response.data);
+    } catch (error) {
+      console.error('Error fetching data from Instagram:', error);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+}
 
 
-module.exports = { reelHandler, downloadReelHandler, imageHandler, downloadSingleImage };
+
+module.exports = { reelHandler, downloadReelHandler, imageHandler, downloadSingleImage ,fetchRequesthandler};

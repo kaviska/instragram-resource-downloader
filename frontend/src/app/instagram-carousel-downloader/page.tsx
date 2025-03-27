@@ -133,25 +133,10 @@ export default function Temp() {
     const fetchData = async () => {
       if (!id) return; // Prevent unnecessary API calls
 
-      console.log("ID", id);
-      console.log("Is Reel", isReel);
-
-      const url = isReel
-        ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
-        : `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/post_by_shortcode?shortcode=${id}`;
-
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key":
-            "3b718006b9msh2d5d11044458229p18a7aejsn27634b6c412a",
-          "x-rapidapi-host":
-            "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
-        },
-      };
+      const url = `http://localhost:5000/api/instagram/${isReel ? 'reel' : 'post'}/${id}`;
 
       try {
-        const response = await fetch(url, options);
+        const response = await fetch(url);
         const result = await response.json();
         console.log("API Result:", result);
         setId(null); // Reset ID after successful fetch
@@ -288,7 +273,7 @@ export default function Temp() {
       <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
       {videoUrl && (
         <div className="mt-12 flex justify-center">
-          <div className="flex flex-col   items-center shadow-sm pb-4">
+          <div className="flex flex-col   items-center shadow-sm pb-4 min-h-[300px] min-w-[375px] max-w-[320px]  max-h-[400px]">
             {thumbnail && (
                 <div className="relative">
                {isLoad === false && (
