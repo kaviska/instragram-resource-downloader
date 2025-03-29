@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { client } from "../../lib/sanity";
 import { urlFor } from "../../lib/sanity";
@@ -66,10 +65,8 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div>
-      {
-        isDownloadAvailable && ( <Temp></Temp> )
-      }
-     
+      {isDownloadAvailable && <Temp></Temp>}
+
       <div className="container mx-auto max-w-6xl  md:px-0 px-12">
         <h1 className="text-black text-[40px] font-bold md:max-w-[50%]">
           {blog[0].title}
@@ -77,49 +74,51 @@ export default async function Page({ params }: PageProps) {
       </div>
 
       <div className="page-content mt-5 flex container mx-auto max-w-6xl  md:px-0 px-12">
-        <div className={isSidebarAvailable ? "md:w-[75%] w-[100%]" : "w-[100%]"}>
+        <div
+          className={isSidebarAvailable ? "md:w-[75%] w-[100%]" : "w-[100%]"}
+        >
           <div>
             <img
               src={urlFor(blog[0].mainImage).url()}
               className="w-full object-cover rounded-top"
               alt=""
             />
-<div id="content" className="my-4 prose max-w-none">
-  <PortableText
-    value={blog[0].body}
-    components={{
-      types: {
-        image: ({ value }) => (
-          <img
-            src={urlFor(value.asset).url()}
-            alt={value.alt || "Blog Image"}
-            className="w-full max-h-[500px] object-cover rounded"
-          />
-        ),
-      },
-      block: {
-        h2: ({ children, value }) => (
-          <h2 id={value._key} className="scroll-mt-20">
-            {children}
-          </h2>
-        ),
-        normal: ({ children }) => <p>{children}</p>,
-      },
-    }}
-  />
-</div>
+            <div id="content" className="my-4 prose max-w-none">
+         
+
+              <PortableText
+                value={blog[0].body}
+                components={{
+                  types: {
+                    image: ({ value }) => (
+                      <img
+                        src={urlFor(value.asset).url()}
+                        alt={value.alt || "Blog Image"}
+                        className="w-full max-h-[500px] object-cover rounded"
+                      />
+                    ),
+                  },
+                  block: {
+                    h2: ({ children, value }) => (
+                      <h2 id={value._key} className="scroll-mt-20">
+                        {children}
+                      </h2>
+                    ),
+                    normal: ({ children }) => <p>{children}</p>,
+                  },
+                }}
+              />
+            </div>
             <div className="faq mt-4">
               {blog[0].faq && <FAQBlog faq={blog[0].faq}></FAQBlog>}
             </div>
-
-           
           </div>
         </div>
 
         {isSidebarAvailable && (
           <div className="md:w-[25%] sidebar pl-10  md:flex justify-end hidden w-[0%]">
             <div>
-             <Catalog blog={blog}></Catalog>
+              <Catalog blog={blog}></Catalog>
               <hr className="my-3" />
 
               <div className="user-info mt-4">
@@ -138,21 +137,19 @@ export default async function Page({ params }: PageProps) {
               </div>
 
               <div className="contributors mt-4">
-              <h3 className="font-semibold mt-3">Published Date</h3>
-              <p>{new Date(blog[0].publishedAt).toLocaleDateString()}</p>
-                
-               
-               
-              
+                <h3 className="font-semibold mt-3">Published Date</h3>
+                <p>{new Date(blog[0].publishedAt).toLocaleDateString()}</p>
               </div>
               <hr className="my-3" />
               <div className="categories mt-4">
                 <h3 className="font-semibold mt-3">Categories</h3>
                 {blog[0].categories && blog[0].categories.length > 0 ? (
                   <ul>
-                    {blog[0].categories.map((category: string, index: number) => (
-                      <li key={index}>{category}</li>
-                    ))}
+                    {blog[0].categories.map(
+                      (category: string, index: number) => (
+                        <li key={index}>{category}</li>
+                      )
+                    )}
                   </ul>
                 ) : (
                   <p>No categories available</p>
@@ -177,7 +174,6 @@ export default async function Page({ params }: PageProps) {
                   <p>No tags available</p>
                 )}
               </div>
-
             </div>
           </div>
         )}

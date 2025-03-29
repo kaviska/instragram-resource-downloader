@@ -11,7 +11,9 @@ interface Blog {
 
 export default function Catalog({ blog }: { blog: Blog[] }) {
   return (
-    <div className='flex flex-col gap-4 font-medium cursor-pointer'>
+    <div className='flex flex-col gap-4 font-medium cursor-pointer sticky top-0 bg-white z-10'>
+      <h3 className="font-semibold">Published Date</h3>
+
       {blog[0]?.body
         .filter((block: Block) => block.style === "h2")
         .map((block: Block, index: number) => (
@@ -23,7 +25,7 @@ export default function Catalog({ blog }: { blog: Blog[] }) {
                 element.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className=""
+            className=" text-blue-700 hover:text-blue-500"
           >
             {block.children.map((child: { text: string }) => child.text).join(" ")}
           </div>
