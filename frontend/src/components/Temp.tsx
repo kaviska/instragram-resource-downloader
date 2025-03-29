@@ -10,7 +10,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
-import TopHero from '@/components/TopHero';
+import TempTopHero from '@/components/TempTopHero';
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -223,7 +223,7 @@ export default function Temp() {
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">
-        <TopHero />
+        <TempTopHero />
 
       
 
