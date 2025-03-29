@@ -15,7 +15,7 @@ export default function Card({ CoverImage, Title, Description, Author }: CardPro
 
   return (
     <div>
-      <div className="flex flex-col w-[280px] min-h-[400px] max-h-[450px] overflow-y-auto gap-3 card p-4 rounded-[20px] ">
+      <div className="flex flex-col w-[270px] min-h-[400px] max-h-[450px] overflow-y-auto gap-3 card p-4 rounded-[10px] ">
         <img src={imageUrl} alt="reader-image" className="rounded-[20px]" />
         <span className="text-[20px] font-bold">
           {Title}

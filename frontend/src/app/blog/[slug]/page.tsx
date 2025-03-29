@@ -112,16 +112,7 @@ export default async function Page({ params }: PageProps) {
               {blog[0].faq && <FAQBlog faq={blog[0].faq}></FAQBlog>}
             </div>
 
-            <div className="flex items-center gap-4">
-              <Image
-                src={urlFor(blog[0].authorImage).url()}
-                alt="author-image"
-                width={40}
-                height={40}
-                className="rounded-full"
-              ></Image>
-              <span>{blog[0].author}</span>
-            </div>
+           
           </div>
         </div>
 
