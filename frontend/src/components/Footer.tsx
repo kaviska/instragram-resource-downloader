@@ -22,6 +22,11 @@ export default function Footer() {
                             Terms of Service
                         </a>
                     </span>
+                    <span>
+                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/all-blog">
+                           Blog
+                        </a>
+                    </span>
                 </div>
 
                 <div className="flex justify-center items-center mt-4 space-x-4">
