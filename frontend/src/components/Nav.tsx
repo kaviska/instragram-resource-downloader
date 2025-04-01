@@ -1,6 +1,6 @@
 'use client';
 
-import {  usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/logo.png';
@@ -21,11 +21,15 @@ export default function Nav() {
         <div>
           <Link href="/" onClick={handleLogoClick} className="text-lg font-bold flex gap-3">
             <Image src={Logo} alt="logo" width={60} height={60} />
-            <h2 className='text-[#DA08C9] md:text-[24px] text-[20px] mt-4 '>SaveFromInsta</h2>
+            <h2 className="text-[#DA08C9] md:text-[24px] text-[20px] mt-4">SaveFromInsta</h2>
           </Link>
         </div>
-        <div></div>
-        <div></div>
+
+        <div className="ml-auto flex justify-center items-center mb-4">
+          <Link href="/all-blogcd" className="text-lg font-medium flex gap-3">
+            <h2 className="text-[#000000] md:text-[24px] text-[20px] mt-4">Blogs</h2>
+          </Link>
+        </div>
       </div>
     </nav>
   );
