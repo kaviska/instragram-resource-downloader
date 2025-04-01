@@ -1,112 +1,156 @@
+"use client";
+import { useEffect, useState } from "react";
+import { client } from "../app/lib/sanity"; // Import the Sanity client
 import HowToCard from "./HowToCard";
 import FAQ from "./FAQ";
 
-export default function ContainSectionPhoto() {
+export default function ContainSection() {
+  interface Step {
+    title: string;
+    description: string;
+  }
+
+  interface Data {
+    visibility: {
+      showHowToDownload: boolean;
+      showSaveFromInsta: boolean;
+      showFeatures: boolean;
+      showFAQ: boolean;
+      showWhyShouldUse: boolean;
+    };
+    howToDownloadHeader: string;
+    howToDownloadSteps: Step[];
+    saveFromInstaHeader: string;
+    saveFromInstaContent: string;
+    featuresHeader: string;
+    features: Step[];
+    faq: { question: string; answer: string }[];
+    whyShouldUse: { title: string; description: string }[];
+  }
+
+  const [data, setData] = useState<Data | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const query = `*[_type == "containSectionPhoto"][0]`;
+      const result = await client.fetch(query);
+      setData(result);
+    }
+    fetchData();
+  }, []);
+
+  if (!data)
+    return (
+      <div className="flex justify-center items-center ">
+        <div>
+          <svg
+            className="animate-spin h-10 w-10 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"
+            ></path>
+          </svg>
+          <p className="text-center mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+
+  // Add default values for visibility
+  const {
+    visibility = {
+      showHowToDownload: false,
+      showSaveFromInsta: false,
+      showFeatures: false,
+      showFAQ: false,
+      showWhyShouldUse: false,
+    },
+    howToDownloadHeader,
+    howToDownloadSteps,
+    saveFromInstaHeader,
+    saveFromInstaContent,
+    featuresHeader,
+    features,
+    faq,
+    whyShouldUse,
+  } = data;
+
   return (
     <div>
-      <div className="container max-w-4xl px-6 py-10 mx-auto container-section">
-        <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-          How to Download Instagram Photos with Save From Insta?
-        </h2>
-
-        <div className="flex md:gap-9 gap-3">
-          <div className="flex flex-col gap-8">
-            <HowToCard
-              title="1. Copy the Photo Link"
-              description="Open Instagram, find the photo you want to download, and copy its link from the three-dot menu."
-            />
-
-            <HowToCard
-              title="2. Paste the Link & Download"
-              description="Paste the copied link into our photo downloader and click “Download.”"
-            />
-
-            <HowToCard
-              title="3. That’s all! Enjoy your photo."
-              description=""
-            />
-          </div>
-        </div>
-
-        <div className="mt-12">
+      {visibility.showHowToDownload && (
+        <div className="container md:px-0 px-6 max-w-4xl py-6 mx-auto container-section">
           <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-            Why Use SaveFromInsta to Download Instagram Photos?
+            {howToDownloadHeader}
           </h2>
-
-          <div className="flex">
-            <p>
-              <b>Save From Insta</b>’s Instagram photo downloader lets you download high-quality photos from Instagram without logging in or signing up. You can now download Instagram photos or posts with just pasting the IG post’s URL on our tool. Our platform provides quick, easy, and high-quality downloads.
-            </p>
-          </div>
-
-          <h1 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
-            Why Choose Save From Insta?
-          </h1>
-
-          <div className="flex">
-            <ul className="space-y-6">
-              <li>
-                <span>✔</span>
-                <span>
-                  {" "}
-                  <b>Fast & Free Photo Downloads</b> – Unlimited downloads without signing up.
-                </span>
-              </li>
-
-              <li>
-                <span>✔</span>
-                <span>
-                  {" "}
-                  <b>No Watermarks</b> – Download Instagram photos exactly as they are.
-                </span>
-              </li>
-
-              <li>
-                <span>✔</span>
-                <span>
-                  {" "}
-                  <b>HD Quality</b> – Get high-resolution Instagram photos.
-                </span>
-              </li>
-
-              <li>
-                <span>✔</span>
-                <span>
-                  {" "}
-                  <b>Works on All Devices</b> – Supports Android, iPhone, Windows, Mac, and more.
-                </span>
-              </li>
-
-              <li>
-                <span>✔</span>
-                <span>
-                  {" "}
-                  <b>Private & Secure</b> – No data storage; your privacy is our priority.
-                </span>
-              </li>
-            </ul>
+          <div className="flex md:gap-9 gap-3 ">
+            <div className="flex flex-col gap-8">
+              {howToDownloadSteps.map((step, index) => (
+                <HowToCard key={index} title={step.title} description={step.description} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="mt-3">
-        <FAQ
-          faq={[
-            {
-              question: "Can I download Instagram photos in HD?",
-              answer: "Yes, simply paste the Instagram photo link into our tool and download it in high definition.",
-            },
-            {
-              question: "Can I download private Instagram photos?",
-              answer: "No, only public Instagram photos can be downloaded.",
-            },
-            {
-              question: "Where are my downloaded Instagram photos saved?",
-              answer: "On the desktop, they’ll be in your “Downloads” folder. On mobile, they’ll save to your gallery or camera roll.",
-            },
-          ]}
-        />
-      </div>
+      {visibility.showSaveFromInsta && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+            {saveFromInstaHeader}
+          </h2>
+          <p>{saveFromInstaContent}</p>
+        </div>
+      )}
+
+      {visibility.showFeatures && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
+            {featuresHeader}
+          </h2>
+          <div className="flex md:gap-9 gap-3">
+            <div className="flex flex-col gap-8">
+              {features.map((feature, index) => (
+                <HowToCard key={index} title={feature.title} description={feature.description} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {visibility.showWhyShouldUse && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
+            Why Should You Use This?
+          </h2>
+          <div className="flex md:gap-9 gap-3">
+            <div className="flex flex-col gap-8">
+              {whyShouldUse.map((item: { title: string; description: string }, index: number) => (
+                <div key={index}>
+                  <span className="text-14px font-medium">{item.title}: </span>
+                  <span className="text-[14px]">{item.description}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {visibility.showFAQ && (
+        <div className="mt-12">
+          <FAQ faq={faq} />
+        </div>
+      )}
     </div>
   );
 }

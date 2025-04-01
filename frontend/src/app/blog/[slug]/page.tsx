@@ -67,7 +67,7 @@ export default async function Page({ params }: PageProps) {
     <div>
       {isDownloadAvailable && <Temp></Temp>}
 
-      <div className="container mx-auto max-w-6xl  md:px-0 px-12">
+      <div className="container mx-auto max-w-6xl  md:px-0 px-12 mt-[-30px]">
         <h1 className="text-black text-[40px] font-bold md:max-w-[50%]">
           {blog[0].title}
         </h1>

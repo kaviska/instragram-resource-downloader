@@ -46,7 +46,7 @@ export default async function AllBlog() {
   console.log(blogs);
 
   return (
-    <div className="container mx-auto max-w-6xl  md:px-0 px-12">
+    <div className="container mx-auto max-w-6xl mt-[-30px] md:px-0 px-12 ">
       <div className="mt-5 text-center">
         <h1 className="text-black text-[40px] font-bold">Blog</h1>
         <div className="mt-3">

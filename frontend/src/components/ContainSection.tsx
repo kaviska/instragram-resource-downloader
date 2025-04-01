@@ -1,172 +1,155 @@
-import HowToCard from "./HowToCard"
-import FAQ from "./FAQ"
-export default function ContainSection(){
-    return(
+import { useEffect, useState } from "react";
+import { client } from "../app/lib/sanity"; // Import the Sanity client
+import HowToCard from "./HowToCard";
+import FAQ from "./FAQ";
+
+export default function ContainSection() {
+  interface Step {
+    title: string;
+    description: string;
+  }
+
+  interface Data {
+    visibility: {
+      showHowToDownload: boolean;
+      showSaveFromInsta: boolean;
+      showFeatures: boolean;
+      showFAQ: boolean;
+      showWhyShouldUse: boolean;
+    };
+    howToDownloadHeader: string;
+    howToDownloadSteps: Step[];
+    saveFromInstaHeader: string;
+    saveFromInstaContent: string;
+    featuresHeader: string;
+    features: Step[];
+    faq: { question: string; answer: string }[];
+    whyShouldUse: { title: string; description: string }[];
+  }
+
+  const [data, setData] = useState<Data | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const query = `*[_type == "containSection"][0]`;
+      const result = await client.fetch(query);
+      setData(result);
+    }
+    fetchData();
+  }, []);
+
+   if (!data)
+    return (
+      <div className="flex justify-center items-center ">
         <div>
-              <div className="container max-w-4xl px-6 py-10 mx-auto container-section">
-        <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-          How to Download Instagram Content?
-        </h2>
-
-        <div className="flex    md:gap-9 gap-3">
-          <div className="flex flex-col gap-8  ">
-            <HowToCard
-              title="1. Copy the Instagram Link"
-              description="Open Instagram app or website and find the video, reel, story, or post you want to download.Tap on the three-dot menu on the right-left corner and select 'Copy Link.'"
-            />
-
-            <HowToCard
-              title="2. Paste the Link on Save From Insta & Download"
-              description="Past the link on the above box and click download."
-            />
-
-            <HowToCard
-              title="3. Just Kidding There’s no step 3. Enjoy your content :)"
-              description="💡 Tip: You can easily paste the copied link by clicking on the ‘paste’ button."
-            />
-          </div>
+          <svg
+            className="animate-spin h-10 w-10 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"
+            ></path>
+          </svg>
+          <p className="text-center mt-2 text-gray-600">Loading...</p>
         </div>
+      </div>
+    );
 
-        <div className="mt-12">
+  // Add default values for visibility
+  const {
+    visibility = {
+      showHowToDownload: false,
+      showSaveFromInsta: false,
+      showFeatures: false,
+      showFAQ: false,
+      showWhyShouldUse: false,
+    },
+    howToDownloadHeader,
+    howToDownloadSteps,
+    saveFromInstaHeader,
+    saveFromInstaContent,
+    featuresHeader,
+    features,
+    faq,
+    whyShouldUse,
+  } = data;
+
+  return (
+    <div>
+      {visibility.showHowToDownload && (
+        <div className="container md:px-0 px-6 max-w-4xl py-6 mx-auto container-section">
           <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-            What is Save From Insta?
+            {howToDownloadHeader}
           </h2>
-
-          <div className="   flex">
-            <p className="">
-              <>Save From Insta</> is your go-to Instagram video downloader that allows you to download Instagram reels, videos, photos, carousels, and stories quickly and securely. Whether you want to save Insta reels, download IG videos, or save Instagram stories with music, our tool provides high-quality downloads with just one click. No sign up or installation needed. Just copy and paste the post link and download.
-            </p>
+          <div className="flex md:gap-9 gap-3 ">
+            <div className="flex flex-col gap-8">
+              {howToDownloadSteps.map((step, index) => (
+                <HowToCard key={index} title={step.title} description={step.description} />
+              ))}
+            </div>
           </div>
+        </div>
+      )}
 
+      {visibility.showSaveFromInsta && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
+            {saveFromInstaHeader}
+          </h2>
+          <p>{saveFromInstaContent}</p>
+        </div>
+      )}
+
+      {visibility.showFeatures && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
           <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
-            Why should you use Save From Insta?
+            {featuresHeader}
           </h2>
-
-          <div className="   flex ">
-            <ul className=" space-y-6">
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>No Login/No sign up</b> - No login or sign up required, Just past
-                  the instagram post or reel link and download the media to your
-                  device.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Fast & Free</b> - Unlimited downloads without login or
-                  registration..{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>No Watermarks</b> – What you see is what you get!{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Works on Any Device</b> – Supports Mobile (Android, iPhone)
-                  , PC (Windows, Mac) and tablets.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Private & Secure</b> – We don’t store any user data.{" "}
-                </span>
-              </li>
-
-              <li>
-                <span> ✔</span>
-                <span>
-                  {" "}
-                  <b>Less ads</b> - Very minimal ads for fast and seamless
-                  service.{" "}
-                </span>
-              </li>
-            </ul>
+          <div className="flex md:gap-9 gap-3">
+            <div className="flex flex-col gap-8">
+              {features.map((feature, index) => (
+                <HowToCard key={index} title={feature.title} description={feature.description} />
+              ))}
+            </div>
           </div>
         </div>
+      )}
 
-        <h2 className="text-2xl font-semibold  text-gray-800 lg:text-3xl mb-5 mt-12">
-          Features of Save From Insta 
-        </h2>
-
-        <div className="flex   md:gap-9 gap-3">
-          <div className="flex flex-col gap-8 ">
-            <HowToCard
-              title="🔹 Online Instagram Video Downloader 
-"
-              description="Are you looking to download Instagram videos in HD? Save from Insta provides MP4 and high-resolution formats so you can download your favourite reels and videos.
-'"
-            />
-
-            <HowToCard
-              title="🔹 Save Instagram Stories & Highlights"
-              description="If you are looking to save one of your instagram Stories or Instagram Highlights, Our Instagram story saver allows you to save any public story or highlight with just 2 clicks.
- 
-.
-."
-            />
-
-            <HowToCard
-              title="🔹 Online Instagram Reels Downloader in HD
-"
-              description="With our online Instagram Reels downloader you can now download or save your favourite IG reels 
-"
-            />
-
-            <HowToCard
-              title="🔹 Online Instagram Profile Picture Downloader"
-              description="Want your Instagram Profile Photo on your device? Use our profile picture saver option and download your Instagram profile photo.."
-            />
+      {visibility.showWhyShouldUse && (
+        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
+          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
+            Why Should You Use This?
+          </h2>
+          <div className="flex md:gap-9 gap-3">
+            <div className="flex flex-col gap-8">
+              {whyShouldUse.map((item: { title: string; description: string }, index: number) => (
+                <div key={index}>
+                  <span className="text-14px font-medium">{item.title}: </span>
+                  <span className="text-[14px]">{item.description}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="mt-3">
-        <FAQ
-          faq={[
-            {
-              question: "How can I download Instagram reels in HD?",
-              answer:
-                "Simply copy the Instagram reel link, paste it into our Instagram reels downloader, and hit Download. ",
-            },
-            {
-              question: "Can I download private Instagram stories?",
-              answer:
-                "No, Unfortunately you can't download private instagram content. Only public Instagram content can be downloaded.",
-            },
-            {
-              question: "Does this work on mobile?",
-              answer:
-                "Yes! Our tool is optimized for Android, iPhone, iPad, and desktop. You can access our website through any web browser.",
-            },
-            {
-              question: "Where do my downloaded files go?",
-              answer:
-                "Downloaded media will be saved on your device, on desktop you can access them from the downloads section on the web browser, On mobile media saves to the camera roll or gallery.",
-            },
-            {
-              question: "Can I download Instagram profile pictures?",
-              answer:
-                "Yes, You can use our Instagram Profile Picture saver feature to use .",
-            },
-          ]}
-        />
-      </div>
+      {visibility.showFAQ && (
+        <div className="mt-12">
+          <FAQ faq={faq} />
         </div>
-    )
+      )}
+    </div>
+  );
 }

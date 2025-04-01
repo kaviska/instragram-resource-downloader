@@ -14,7 +14,7 @@ export default function FAQ({ faq }: FAQProps) {
 
   return (
     <section className="bg-white">
-      <div className="container max-w-4xl px-6  mx-auto">
+      <div className="container max-w-4xl  md:px-0 px-6    mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl">
           Frequently Asked Questions
         </h2>
