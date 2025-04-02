@@ -26,7 +26,7 @@ export default function Nav() {
         </div>
 
         <div className="ml-auto flex justify-center items-center mb-4">
-          <Link href="/all-blogcd" className="text-lg font-medium flex gap-3">
+          <Link href="/blogs" className="text-lg font-medium flex gap-3">
             <h2 className="text-[#000000] md:text-[24px] text-[20px] mt-4">Blogs</h2>
           </Link>
         </div>

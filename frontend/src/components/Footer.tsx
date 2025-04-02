@@ -23,7 +23,7 @@ export default function Footer() {
                         </a>
                     </span>
                     <span>
-                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/all-blog">
+                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/blogs">
                            Blog
                         </a>
                     </span>
