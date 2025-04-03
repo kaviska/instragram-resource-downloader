@@ -1,8 +1,11 @@
-"use client";
 import { useEffect, useState } from "react";
 import { client } from "../app/lib/sanity"; // Import the Sanity client
-import HowToCard from "./HowToCard";
-import FAQ from "./FAQ";
+// Removed unused import
+// Removed unused import
+// Removed unused import
+import { PortableText } from "@portabletext/react";
+import { TypedObject } from "@portabletext/types";
+// Removed unused import
 
 export default function ContainSection() {
   interface Step {
@@ -11,6 +14,7 @@ export default function ContainSection() {
   }
 
   interface Data {
+    body: unknown;
     visibility: {
       showHowToDownload: boolean;
       showSaveFromInsta: boolean;
@@ -34,6 +38,7 @@ export default function ContainSection() {
     async function fetchData() {
       const query = `*[_type == "containSectionPhoto"][0]`;
       const result = await client.fetch(query);
+      console.log(result);
       setData(result);
     }
     fetchData();
@@ -70,87 +75,17 @@ export default function ContainSection() {
 
   // Add default values for visibility
   const {
-    visibility = {
-      showHowToDownload: false,
-      showSaveFromInsta: false,
-      showFeatures: false,
-      showFAQ: false,
-      showWhyShouldUse: false,
-    },
-    howToDownloadHeader,
-    howToDownloadSteps,
-    saveFromInstaHeader,
-    saveFromInstaContent,
-    featuresHeader,
-    features,
-    faq,
-    whyShouldUse,
+    // Removed unused destructured variables
   } = data;
 
   return (
-    <div>
-      {visibility.showHowToDownload && (
-        <div className="container md:px-0 px-6 max-w-4xl py-6 mx-auto container-section">
-          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-            {howToDownloadHeader}
-          </h2>
-          <div className="flex md:gap-9 gap-3 ">
-            <div className="flex flex-col gap-8">
-              {howToDownloadSteps.map((step, index) => (
-                <HowToCard key={index} title={step.title} description={step.description} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {visibility.showSaveFromInsta && (
-        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
-          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-8">
-            {saveFromInstaHeader}
-          </h2>
-          <p>{saveFromInstaContent}</p>
-        </div>
-      )}
-
-      {visibility.showFeatures && (
-        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
-          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
-            {featuresHeader}
-          </h2>
-          <div className="flex md:gap-9 gap-3">
-            <div className="flex flex-col gap-8">
-              {features.map((feature, index) => (
-                <HowToCard key={index} title={feature.title} description={feature.description} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {visibility.showWhyShouldUse && (
-        <div className="container md:px-0 px-6 mx-auto max-w-4xl">
-          <h2 className="text-2xl font-semibold text-gray-800 lg:text-3xl mb-5 mt-12">
-            Why Should You Use This?
-          </h2>
-          <div className="flex md:gap-9 gap-3">
-            <div className="flex flex-col gap-8">
-              {whyShouldUse.map((item: { title: string; description: string }, index: number) => (
-                <div key={index}>
-                  <span className="text-14px font-medium">{item.title}: </span>
-                  <span className="text-[14px]">{item.description}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {visibility.showFAQ && (
-        <div className="mt-12">
-          <FAQ faq={faq} />
-        </div>
-      )}
+    <div className="container max-w-4xl md:px-0 px-6 mx-auto">
+      <div className="prose max-w-none">
+      <PortableText value={data.body as TypedObject | TypedObject[]} />
+      </div>
     </div>
+
+    
+    
   );
 }
