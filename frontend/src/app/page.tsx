@@ -25,6 +25,7 @@ export default function Temp() {
   const [pogress, setPogress] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
   const [story,setStory]=useState<string | null>(null);
+  const [profilePic,setProfilePic]=useState<string | null>(null);
   
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
@@ -102,6 +103,7 @@ export default function Temp() {
     setPogress(true);
     setIsLoad(false);
     setStory(null);
+    setProfilePic(null);
 
     try {
       const parsedUrl = new URL(data);
@@ -111,24 +113,28 @@ export default function Temp() {
       }
       if(parts[0] === "stories"){
         setStory(parts[1]);
-       
+      }
+      if (parts.length === 1) {
+        setProfilePic(parts[0]);
+        console.log("Profile Pic", parts[0]);
        
       }
 
-      if (
-        parts.length < 2 ||
-        (parts[0] !== "p" &&
-          parts[0] !== "reel" &&
-          parts[1] !== "p" &&
-          parts[1] !== "reel")&&
-          parts[0] !== "stories"
-      ) {
-        alert("Invalid URL. Please enter a valid Instagram URL.");
-        return;
-      }
+      // else if (
+       
+      //   (parts[0] !== "p" &&
+      //     parts[0] !== "reel" &&
+      //     parts[1] !== "p" &&
+      //     parts[1] !== "reel") &&
+      //   parts[0] !== "stories" 
+       
+      // ) {
+      //   alert("Invalid URL. Please enter a valid Instagram URL.");
+      //   return;
+      // }
 
       const newId =
-        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2]; // Extract shortcode
+        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2] ; // Extract shortcode
       setIsReel(parts[0] === "reel" || parts[1] === "reel");
       setId(newId);
     } catch (error) {
@@ -139,7 +145,9 @@ export default function Temp() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!id) return; // Prevent unnecessary API calls
+      console.log("fetching data")
+
+      // if (!id) return; // Prevent unnecessary API calls
 
       console.log("ID", id);
       console.log("Is Reel", isReel);
@@ -203,6 +211,22 @@ export default function Temp() {
         
         return;
         
+      }
+      if(profilePic){
+        console.log("Profile Pic Fetching", profilePic);
+        const profilePicUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/profile_by_username?username=${profilePic}`;
+        const profilePicResponse = await fetch(profilePicUrl, options);
+        if (!profilePicResponse.ok) {
+          console.error("Failed to fetch profile picture data:", profilePicResponse.statusText);
+          return;
+        }
+        const profilePicData = await profilePicResponse.json();
+        console.log("Profile Pic Response Data:", profilePicData);
+        setFetchedId(profilePicData.pk); // Update fetchedId only after successful fetch
+        setImageUrl(profilePicData.hd_profile_pic_versions[0].url);
+        console.log('profile pic url',profilePicData.hd_profile_pic_versions[0].url)
+        setPogress(false);
+        return;
       }  
 
 
@@ -275,7 +299,7 @@ export default function Temp() {
     };
 
     fetchData();
-  }, [id, isReel]);
+  }, [id, isReel, profilePic, story, videoUrl]);
 
   return (
     <div>
@@ -496,6 +520,8 @@ export default function Temp() {
               <Image
                 src={imageUrl}
                 alt="image"
+                width={300}
+                height={375}
                
                 className="w-[300px] h-[375px] object-cover "
                 onLoad={() => setIsLoad(true)}
