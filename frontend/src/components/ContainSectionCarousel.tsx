@@ -5,31 +5,19 @@ import { client } from "../app/lib/sanity"; // Import the Sanity client
 // Removed unused import
 import { PortableText } from "@portabletext/react";
 import { TypedObject } from "@portabletext/types";
+import FAQ from "./FAQ";
 // Removed unused import
 
 export default function ContainSection() {
-  interface Step {
-    title: string;
-    description: string;
-  }
+
 
   interface Data {
     body: unknown;
-    visibility: {
-      showHowToDownload: boolean;
-      showSaveFromInsta: boolean;
-      showFeatures: boolean;
-      showFAQ: boolean;
-      showWhyShouldUse: boolean;
-    };
+  
     howToDownloadHeader: string;
-    howToDownloadSteps: Step[];
-    saveFromInstaHeader: string;
-    saveFromInstaContent: string;
-    featuresHeader: string;
-    features: Step[];
+   
     faq: { question: string; answer: string }[];
-    whyShouldUse: { title: string; description: string }[];
+   
   }
 
   const [data, setData] = useState<Data | null>(null);
@@ -79,11 +67,33 @@ export default function ContainSection() {
   } = data;
 
   return (
-    <div className="container max-w-4xl md:px-0 px-6 mx-auto">
+    <div>
+<div className="container max-w-4xl md:px-0 px-6 mx-auto">
       <div className="prose max-w-none">
-      <PortableText value={data.body as TypedObject | TypedObject[]} />
+        <PortableText 
+          value={data.body as TypedObject | TypedObject[]} 
+          components={{
+        block: {
+          h1: ({ children }) => <h1 className="text-3xl font-semibold">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-2xl font-medium">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-xl font-normal">{children}</h3>,
+          normal: ({ children }) => <p className="text-cm leading-relaxed">{children}</p>,
+        },
+          }}
+        />
       </div>
+
     </div>
+    <div className="mt-3">
+        {/* {data.faq.length > 0 && <FAQ faq={data.faq} />} */}
+    {data.faq.length > 0 && (
+      <FAQ faq={data.faq} />
+    )}
+    </div>
+  
+ 
+    </div>
+    
 
     
     

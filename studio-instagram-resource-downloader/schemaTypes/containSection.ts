@@ -10,10 +10,23 @@ export default {
       type: 'string',
     },
     {
+      name: 'metaTitle',
+      title: 'Meta Title',
+      type: 'string',
+    },
+    {
+      name: 'metaDescription',
+      title: 'Meta Description',
+      type: 'text',
+      description: 'A short description of the blog post (Max: 160 words)',
+     
+    },
+    {
       name:'body',
       type:'blockContent',
 
-    }
+    },
+
     // {
     //   name: 'howToDownloadSteps',
     //   title: 'How to Download Steps',
@@ -72,20 +85,20 @@ export default {
     //       },
     //     ],
     //   },
-    // {
-    //   name: 'faq',
-    //   title: 'FAQ',
-    //   type: 'array',
-    //   of: [
-    //     {
-    //       type: 'object',
-    //       fields: [
-    //         { name: 'question', title: 'Question', type: 'string' },
-    //         { name: 'answer', title: 'Answer', type: 'text' },
-    //       ],
-    //     },
-    //   ],
-    // },
+     {
+      name: 'faq',
+      title: 'FAQ',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'question', title: 'Question', type: 'string' },
+            { name: 'answer', title: 'Answer', type: 'text' },
+          ],
+        },
+      ],
+    },
     // {
     //   name: 'visibility',
     //   title: 'Visibility',
