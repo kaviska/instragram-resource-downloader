@@ -47,7 +47,7 @@ export default async function AllBlog() {
 
   return (
     <div className="container mx-auto max-w-6xl mt-[-30px] md:px-0 px-12 ">
-      <div className="mt-5 text-center">
+      {/* <div className="mt-5 text-center">
         <h1 className="text-black text-[40px] font-bold">Blog</h1>
         <div className="mt-3">
           <input
@@ -69,7 +69,7 @@ export default async function AllBlog() {
             />
           </a>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
