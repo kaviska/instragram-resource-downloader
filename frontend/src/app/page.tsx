@@ -24,6 +24,7 @@ export default function Temp() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
+  const [story,setStory]=useState<string | null>(null);
   
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
@@ -100,6 +101,7 @@ export default function Temp() {
     setImageUrl(null);
     setPogress(true);
     setIsLoad(false);
+    setStory(null);
 
     try {
       const parsedUrl = new URL(data);
@@ -107,13 +109,19 @@ export default function Temp() {
       for (let i = 0; i < parts.length; i++) {
         console.log("Parts:", parts[i]);
       }
+      if(parts[0] === "stories"){
+        setStory(parts[1]);
+       
+       
+      }
 
       if (
         parts.length < 2 ||
         (parts[0] !== "p" &&
           parts[0] !== "reel" &&
           parts[1] !== "p" &&
-          parts[1] !== "reel")
+          parts[1] !== "reel")&&
+          parts[0] !== "stories"
       ) {
         alert("Invalid URL. Please enter a valid Instagram URL.");
         return;
@@ -140,6 +148,7 @@ export default function Temp() {
         ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
         : `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/post_by_shortcode?shortcode=${id}`;
 
+    
       const options = {
         method: "GET",
         headers: {
@@ -149,6 +158,53 @@ export default function Temp() {
             "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
         },
       };
+      if(story){
+        const storyResponse = await fetch(
+          `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/user_id_by_username?username=${story}`,
+          options
+        );
+        if (!storyResponse.ok) {
+          console.error("Failed to fetch story data:", storyResponse.statusText);
+          return;
+        }
+        const storyData = await storyResponse.json();
+        console.log("Story Response Data:", storyData);
+        //wait for one second
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        //https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=25025320
+        const storyUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=${storyData.UserID}`;
+        const storyResponseData = await fetch(storyUrl, options);
+        const storyResult = await storyResponseData.json();
+        console.log("Story Result:", storyResult);
+
+        if (storyResult.length > 0) {
+          if (storyResult[0].video_versions) {
+            console.log("Story has video versions");
+            setVideoUrl(storyResult[0].video_versions[0].url);
+            setThumbnail(storyResult[0].image_versions2.candidates[0].url);
+            setIsReel(true);
+          
+          } else if (storyResult[0].image_versions2) {
+            console.log("Story has image versions");
+            setImageUrl(storyResult[0].image_versions2.candidates[0].url);
+            setIsReel(false);
+           
+          } else {
+            console.error("No valid media found in story result");
+            alert("No valid media found in the story.");
+          }
+        } else {
+          console.error("Empty story result");
+          alert("No story data found.");
+        }
+        setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
+        setPogress(false);
+
+        
+        return;
+        
+      }  
+
 
       try {
         const response = await fetch(url, options);
