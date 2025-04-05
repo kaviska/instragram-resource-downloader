@@ -26,6 +26,7 @@ type Blog = {
 
 export default async function AllBlog() {
   const blogs = await getBlogs();
+  console.log(blogs);
 
   return (
     <div className="container mx-auto max-w-6xl mt-[-30px] md:px-0 px-12 ">
@@ -41,16 +42,24 @@ export default async function AllBlog() {
       </div>
 
       <div className="mt-5 flex md:flex-row flex-col flex-wrap justify-center items-center md:justify-start cursor-pointer gap-x-6 gap-y-3">
-        {blogs.map((blog: Blog) => (
-          <a href={`/blog/${blog.slug}`} key={blog._id}>
-            <Card
-              CoverImage={blog.image}
-              Title={blog.title}
-              Description={blog.titleDescription}
-              Author={blog.author}
-            />
-          </a>
-        ))}
+      {blogs.length === 0 ? (
+        <div className="mt-5 text-center text-gray-500">
+          <p>No blogs available at the moment. Please check back later.</p>
+        </div>
+      ) : (
+        <div className="mt-5 flex md:flex-row flex-col flex-wrap justify-center items-center md:justify-start cursor-pointer gap-x-6 gap-y-3">
+          {blogs.map((blog: Blog) => (
+            <a href={`/blog/${blog.slug}`} key={blog._id}>
+              <Card
+                CoverImage={blog.image}
+                Title={blog.title}
+                Description={blog.titleDescription}
+                Author={blog.author}
+              />
+            </a>
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );
