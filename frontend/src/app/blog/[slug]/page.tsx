@@ -6,8 +6,6 @@ import FAQBlog from "@/components/FAQBlog";
 import Temp from "@/components/Temp";
 import Catalog from "@/components/Catalog";
 
-//comented out the import of client
-
 interface PageProps {
   params: Promise<{ slug: string[] }>;
 }
@@ -20,7 +18,8 @@ async function getBlogBySlug(slug: string[]) {
     "image": mainImage.asset->url,
     "metaTitle": metaTitle,
     "metaDescription": metaDescription,
-    "sidebar": sidebar
+    "sidebar": sidebar,
+    "categories": categories[]->title // Resolve category references to fetch their titles
   }`;
   const queryParams = { slug };
   return await client.fetch(query, queryParams);
@@ -30,7 +29,10 @@ async function getBlogBySlug(slug: string[]) {
 export async function generateMetadata({ params }: PageProps) {
   const resolvedParams = await params;
   const blog = await getBlogBySlug(resolvedParams.slug);
-  console.log(blog);
+
+  console.log("Blog Data:", blog);
+  console.log("Categories:", blog[0].categories);
+
   if (!blog || blog.length === 0) {
     return {
       title: "Blog Post",
@@ -78,17 +80,15 @@ export default async function Page({ params }: PageProps) {
           className={isSidebarAvailable ? "md:w-[75%] w-[100%]" : "w-[100%]"}
         >
           <div>
-            {blog[0].mainImage && ( 
+            {blog[0].mainImage && (
               <img
-              src={urlFor(blog[0].mainImage).url()}
-              className="w-full object-cover rounded-top"
-              alt=""
-            />
+                src={urlFor(blog[0].mainImage).url()}
+                className="w-full object-cover rounded-top"
+                alt=""
+              />
             )}
-            
-            <div id="content" className="my-4 prose max-w-none">
-         
 
+            <div id="content" className="my-4 prose max-w-none">
               <PortableText
                 value={blog[0].body}
                 components={{
@@ -119,7 +119,7 @@ export default async function Page({ params }: PageProps) {
         </div>
 
         {isSidebarAvailable && (
-          <div className="md:w-[25%] sidebar pl-10  md:flex justify-end hidden w-[0%]">
+          <div className="md:w-[25%] sidebar pl-10  md:flex justify-end hidden w-[0%] ">
             <div>
               <Catalog blog={blog}></Catalog>
               <hr className="my-3" />
@@ -144,49 +144,47 @@ export default async function Page({ params }: PageProps) {
                 <p>{new Date(blog[0].publishedAt).toLocaleDateString()}</p>
               </div>
               <hr className="my-3" />
-              <div className="categories mt-4">
-  <h3 className="font-semibold mt-3">Categories</h3>
-  {blog[0].categories &&
-  blog[0].categories.filter(
-    (category: { _ref?: string; _type?: string } | string) =>
-      !(typeof category === "object" && category._ref && category._type)
-  ).length > 0 ? (
-    <ul>
-      {blog[0].categories
-        .filter(
-          (category: { _ref?: string; _type?: string } | string) =>
-            !(typeof category === "object" && category._ref && category._type)
-        )
-        .map((category: string | { _ref?: string; _type?: string }, index: number) => (
-          <li key={index}>
-            {typeof category === "object" && category._ref ? category._ref : String(category)}
-          </li>
-        ))}
-    </ul>
-  ) : (
-    <p>No categories available</p>
-  )}
-</div>
+
+              {/* Categories Section */}
+              {Array.isArray(blog[0].categories) &&
+                blog[0].categories.length > 0 && (
+                  <div className="categories mt-4">
+                    <h3 className="font-semibold mt-3">Categories</h3>
+                    <ul>
+                      {blog[0].categories.map(
+                        (category: string, index: number) => (
+                          <li key={index}>{category}</li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                )}
 
               <hr className="my-3" />
               <div className="tags mt-4">
-  <h3 className="font-semibold mt-3">Tags</h3>
-  {blog[0].tags && blog[0].tags.length > 0 ? (
-    <ul className="flex flex-wrap gap-2">
-      {blog[0].tags.map((tag: { _ref?: string; _type?: string } | string, index: number) => (
-        <li
-          key={index}
-          className="bg-gray-200 text-gray-700 px-2 py-1 rounded"
-        >
-          {/* If tag is an object, access its property */}
-          {typeof tag === "object" && tag._ref ? String(tag._ref) : String(tag)}
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No tags available</p>
-  )}
-</div>
+                <h3 className="font-semibold mt-3">Tags</h3>
+                {blog[0].tags && blog[0].tags.length > 0 ? (
+                  <ul className="flex flex-wrap gap-2">
+                    {blog[0].tags.map(
+                      (
+                        tag: { _ref?: string; _type?: string } | string,
+                        index: number
+                      ) => (
+                        <li
+                          key={index}
+                          className="bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                        >
+                          {typeof tag === "object" && tag._ref
+                            ? String(tag._ref)
+                            : String(tag)}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                ) : (
+                  <p>No tags available</p>
+                )}
+              </div>
             </div>
           </div>
         )}
