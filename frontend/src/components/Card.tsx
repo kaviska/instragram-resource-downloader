@@ -15,9 +15,18 @@ export default function Card({ CoverImage, Title, Description, Author }: CardPro
 
   return (
     <div>
-      <div className="flex flex-col w-[270px] min-h-[400px] max-h-[450px] overflow-y-auto gap-3 card p-4 rounded-lg ">
-        <img src={imageUrl} alt="reader-image" className="rounded-lg" />
-        <span className="text-[20px] font-bold">
+      <div className="flex flex-col w-[270px] min-h-[400px]  overflow-y-auto gap-3 card p-4 rounded-lg ">
+        {CoverImage ? (
+           <img
+           src={urlFor(CoverImage).url()}
+           alt={"Blog Image"}
+           className="rounded-lg max-h-[150px] object-cover"
+         />
+        ) : (
+          <img src={imageUrl} alt="reader-image" className="rounded-lg  max-h-[150px] object-cover" />
+        )}
+       
+        <span className="text-[17px] font-bold">
           {Title}
         </span>
         <span className="text-[14px]">

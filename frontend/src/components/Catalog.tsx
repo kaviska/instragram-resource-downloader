@@ -12,8 +12,7 @@ interface Blog {
 export default function Catalog({ blog }: { blog: Blog[] }) {
   return (
     <div className='flex flex-col gap-4 font-medium cursor-pointer sticky top-0 bg-white z-10'>
-      <h3 className="font-semibold mt-3">Published Date</h3>
-
+    
       {blog[0]?.body
         .filter((block: Block) => block.style === "h2")
         .map((block: Block, index: number) => (
