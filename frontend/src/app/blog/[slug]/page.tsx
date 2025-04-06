@@ -159,7 +159,7 @@ export default async function Page({ params }: PageProps) {
         )
         .map((category: string | { _ref?: string; _type?: string }, index: number) => (
           <li key={index}>
-            {typeof category === "object" && category._ref ? category._ref : category}
+            {typeof category === "object" && category._ref ? category._ref : String(category)}
           </li>
         ))}
     </ul>
