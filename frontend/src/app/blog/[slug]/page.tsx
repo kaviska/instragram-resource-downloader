@@ -148,16 +148,16 @@ export default async function Page({ params }: PageProps) {
   <h3 className="font-semibold mt-3">Categories</h3>
   {blog[0].categories &&
   blog[0].categories.filter(
-    (category: any) =>
+    (category: { _ref?: string; _type?: string } | string) =>
       !(typeof category === "object" && category._ref && category._type)
   ).length > 0 ? (
     <ul>
       {blog[0].categories
         .filter(
-          (category: any) =>
+          (category: { _ref?: string; _type?: string } | string) =>
             !(typeof category === "object" && category._ref && category._type)
         )
-        .map((category: any, index: number) => (
+        .map((category: string | { _ref?: string; _type?: string }, index: number) => (
           <li key={index}>
             {typeof category === "object" && category._ref ? category._ref : category}
           </li>
