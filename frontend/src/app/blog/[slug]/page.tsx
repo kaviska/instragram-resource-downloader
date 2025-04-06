@@ -173,13 +173,13 @@ export default async function Page({ params }: PageProps) {
   <h3 className="font-semibold mt-3">Tags</h3>
   {blog[0].tags && blog[0].tags.length > 0 ? (
     <ul className="flex flex-wrap gap-2">
-      {blog[0].tags.map((tag: any, index: number) => (
+      {blog[0].tags.map((tag: { _ref?: string; _type?: string } | string, index: number) => (
         <li
           key={index}
           className="bg-gray-200 text-gray-700 px-2 py-1 rounded"
         >
           {/* If tag is an object, access its property */}
-          {typeof tag === "object" && tag._ref ? tag._ref : tag}
+          {typeof tag === "object" && tag._ref ? String(tag._ref) : String(tag)}
         </li>
       ))}
     </ul>
