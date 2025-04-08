@@ -2,25 +2,24 @@ import Card from "@/components/Card";
 import { client } from "../../../lib/sanity";
 
 async function getBlogsByCategory(category: string | undefined) {
-    if (!category) {
-      throw new Error("Category parameter is missing.");
-    }
-  
-    const query = `
-      *[_type == "blog" && count((categories[]->title)[@ == $category]) > 0]{
-        _id,
-        title,
-        "image": mainImage,
-        "titleDescription": titleDescription,
-        "slug": slug.current,
-        "author": author->name
-      }
-    `;
-  
-    const queryParams = { category };
-    return await client.fetch(query, queryParams);
+  if (!category) {
+    throw new Error("Category parameter is missing.");
   }
-  
+
+  const query = `
+    *[_type == "blog" && count((categories[]->title)[@ == $category]) > 0]{
+      _id,
+      title,
+      "image": mainImage,
+      "titleDescription": titleDescription,
+      "slug": slug.current,
+      "author": author->name
+    }
+  `;
+
+  const queryParams = { category };
+  return await client.fetch(query, queryParams);
+}
 
 type Blog = {
   _id: string;
@@ -34,7 +33,7 @@ type Blog = {
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
   // Decode the category parameter
   const decodedCategory = decodeURIComponent(params.slug);
-    console.log("Decoded category:", decodedCategory);
+  console.log("Decoded category:", decodedCategory);
 
   const blogs = await getBlogsByCategory(decodedCategory);
   console.log(blogs);
