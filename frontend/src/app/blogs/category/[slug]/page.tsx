@@ -30,9 +30,9 @@ type Blog = {
   author: string;
 };
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  // Decode the category parameter
-  const decodedCategory = decodeURIComponent(params.slug);
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params; // Resolve the promise
+  const decodedCategory = decodeURIComponent(resolvedParams.slug);
   console.log("Decoded category:", decodedCategory);
 
   const blogs = await getBlogsByCategory(decodedCategory);
