@@ -13,7 +13,7 @@ export default function TopHero() {
     const pathname = usePathname(); // Get current path
 
     return (
-        <div className="flex css-glass px-3 py-3 rounded-[6px]">
+        <div className="md:flex hidden flex-wrap md:flex-nowrap css-glass px-3 py-3 rounded-[6px]">
             {[
                 { href: "/instagram-video-downloader", label: "Video", icon: <VideoLibraryIcon style={{ color: "white", fontSize: 18 }} /> },
                 { href: "/instagram-photo-downloader", label: "Photo", icon: <InsertPhotoIcon style={{ color: "white", fontSize: 18 }} /> },
@@ -23,13 +23,15 @@ export default function TopHero() {
                 { href: "/instagram-active-story-downloader", label: "Active Story", icon: <HighlightIcon style={{ color: "white", fontSize: 18 }} /> },
                 { href: "/instagram-profile-picture-downloader", label: "Profile Picture", icon: <ProfileIcon style={{ color: "white", fontSize: 18 }} /> }
             ].map(({ href, label, icon }, index, array) => (
-                <a key={href} href={href}>
+                <a key={href} href={href} className="w-full md:w-auto">
                     <div
-                        className={`flex hover:opacity-80 cursor-pointer gap-2 justify-center items-center ${index !== array.length - 1 ? "border-r border-white" : ""} px-4 ${
+                        className={`flex hover:opacity-80 cursor-pointer gap-2 justify-center items-center ${
+                            index !== array.length - 1 ? "md:border-r md:border-white" : ""
+                        } px-4 py-2 md:py-0 ${
                             pathname === href ? "opacity-80" : "" // Highlight active link
                         }`}
                     >
-                        <span className={`text-[18px] ${pathname === href ? "font-bold text-white" : "text-white"}`}>{label}</span>
+                        <span className={`text-[16px] md:text-[18px] ${pathname === href ? "font-bold text-white" : "text-white"}`}>{label}</span>
                         <div className={`hidden md:block ${pathname === href ? "font-bold" : ""}`}>{icon}</div>
                     </div>
                 </a>
