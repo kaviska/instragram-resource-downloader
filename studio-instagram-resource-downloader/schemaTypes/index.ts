@@ -8,6 +8,9 @@ import containSectionReel from "./containSectionReel"; // Import the new schema 
 import containSectionVideo from "./containSectionVideo";
 import containSectionPhoto from "./containSectionPhoto"; // Import the new schema for the photo page
 import containSectionCarousel from "./containSectionCarousel"; // Import the new schema for the carousel page
+import containSectionProfilePic from "./containSectionProfilePic";
+import containSectionActiveStory from "./containSectionActiveStory";
+import containSectionStory from "./containSectionStory";
 
 export const schemaTypes = [
     blog,
@@ -21,6 +24,9 @@ export const schemaTypes = [
     containSectionVideo,
     containSectionPhoto,
     containSectionCarousel,
+    containSectionProfilePic,
+    containSectionActiveStory,
+    containSectionStory
     
 
 ];
