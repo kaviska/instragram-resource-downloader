@@ -26,7 +26,7 @@ export const schemaTypes = [
     containSectionCarousel,
     containSectionProfilePic,
     containSectionActiveStory,
-    containSectionStory
+   // containSectionStory
     
 
 ];

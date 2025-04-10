@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TopHero from "@/components/TopHero";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import ClearIcon from "@mui/icons-material/Clear";
-import ContainSectionStory from "@/components/ContainSectionStory";
+import ContainSectionActiveStory from "@/components/ContainSectionActiveStory";
 
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
@@ -213,20 +213,53 @@ export default function Temp() {
         
       }
       if(profilePic){
-        console.log("Profile Pic Fetching", profilePic);
-        const profilePicUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/profile_by_username?username=${profilePic}`;
-        const profilePicResponse = await fetch(profilePicUrl, options);
-        if (!profilePicResponse.ok) {
-          console.error("Failed to fetch profile picture data:", profilePicResponse.statusText);
+        const storyResponse = await fetch(
+          `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/user_id_by_username?username=${profilePic}`,
+          options
+        );
+        if (!storyResponse.ok) {
+          console.error("Failed to fetch story data:", storyResponse.statusText);
           return;
         }
-        const profilePicData = await profilePicResponse.json();
-        console.log("Profile Pic Response Data:", profilePicData);
-        setFetchedId(profilePicData.pk); // Update fetchedId only after successful fetch
-        setImageUrl(profilePicData.hd_profile_pic_versions[0].url);
-        console.log('profile pic url',profilePicData.hd_profile_pic_versions[0].url)
-        setPogress(false);
-        return;
+        const storyData = await storyResponse.json();
+        console.log("Story Response Data:", storyData);
+        //wait for one second
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        //https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=25025320
+        const storyUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=${storyData.UserID}`;
+        const storyResponseData = await fetch(storyUrl, options);
+        const storyResult = await storyResponseData.json();
+        console.log("Story Result:", storyResult);
+
+        for (let i = 0; i < storyResult.length; i++) {
+          const media = storyResult[i];
+          if (media.media_type === 2 && media.video_versions) {
+            // If it's a video
+            setMultipleImages((prevImages) => [
+              ...(prevImages || []),
+              {
+          url: media.image_versions2.candidates[0].url,
+          isVideo: true,
+          videoUrl: media.video_versions[0].url,
+              },
+            ]);
+          } else if (media.media_type === 1 && media.image_versions2) {
+            // If it's an image
+            setMultipleImages((prevImages) => [
+              ...(prevImages || []),
+              {
+          url: media.image_versions2.candidates[0].url,
+          isVideo: false,
+              },
+            ]);
+          } else {
+            console.error("Unsupported media type:", media.media_type);
+          }
+        }
+        setPogress(false)
+           
+ return;
+       
       }  
 
 
@@ -582,7 +615,7 @@ export default function Temp() {
 
 
 
-      <ContainSectionStory />
+      <ContainSectionActiveStory />
     </div>
   );
 }

@@ -6,7 +6,6 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import StoryIcon from "@mui/icons-material/AutoStories"; // Icon for Story
-import HighlightIcon from "@mui/icons-material/Highlight"; // Icon for Highlight
 import ProfileIcon from "@mui/icons-material/AccountCircle"; // Icon for Profile Picture
 
 export default function TopHero() {
@@ -20,7 +19,6 @@ export default function TopHero() {
                 { href: "/instagram-reel-downloader", label: "Reel", icon: <MovieCreationIcon style={{ color: "white", fontSize: 18 }} /> },
                 { href: "/instagram-carousel-downloader", label: "Carousel", icon: <ViewCarouselIcon style={{ color: "white", fontSize: 18 }} /> },
                 { href: "/instagram-story-downloader", label: "Story", icon: <StoryIcon style={{ color: "white", fontSize: 18 }} /> },
-                { href: "/instagram-active-story-downloader", label: "Active Story", icon: <HighlightIcon style={{ color: "white", fontSize: 18 }} /> },
                 { href: "/instagram-profile-picture-downloader", label: "Profile Picture", icon: <ProfileIcon style={{ color: "white", fontSize: 18 }} /> }
             ].map(({ href, label, icon }, index, array) => (
                 <a key={href} href={href} className="w-full md:w-auto">

@@ -1,7 +1,7 @@
 // filepath: c:\xampp\htdocs\lms\instragram-resource-downloader\studio-instagram-resource-downloader\schemaTypes\containSection.ts
 export default {
     name: 'containSectionActiveStory',
-    title: 'Active Story Page ',
+    title: 'Story Page ',
     type: 'document',
     fields: [
       {
