@@ -24,6 +24,8 @@ export default function Temp() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
+  const [story,setStory]=useState<string | null>(null);
+  const [profilePic,setProfilePic]=useState<string | null>(null);
   
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
@@ -100,6 +102,10 @@ export default function Temp() {
     setImageUrl(null);
     setPogress(true);
     setIsLoad(false);
+    setStory(null);
+    setId(null);
+    setFetchedId(null);
+    setProfilePic(null);
 
     try {
       const parsedUrl = new URL(data);
@@ -107,20 +113,30 @@ export default function Temp() {
       for (let i = 0; i < parts.length; i++) {
         console.log("Parts:", parts[i]);
       }
-
-      if (
-        parts.length < 2 ||
-        (parts[0] !== "p" &&
-          parts[0] !== "reel" &&
-          parts[1] !== "p" &&
-          parts[1] !== "reel")
-      ) {
-        alert("Invalid URL. Please enter a valid Instagram URL.");
-        return;
+      if(parts[0] === "stories"){
+        setStory(parts[1]);
+      }
+      if (parts.length === 1) {
+        setProfilePic(parts[0]);
+        console.log("Profile Pic", parts[0]);
+       
       }
 
+      // else if (
+       
+      //   (parts[0] !== "p" &&
+      //     parts[0] !== "reel" &&
+      //     parts[1] !== "p" &&
+      //     parts[1] !== "reel") &&
+      //   parts[0] !== "stories" 
+       
+      // ) {
+      //   alert("Invalid URL. Please enter a valid Instagram URL.");
+      //   return;
+      // }
+
       const newId =
-        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2]; // Extract shortcode
+        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2] ; // Extract shortcode
       setIsReel(parts[0] === "reel" || parts[1] === "reel");
       setId(newId);
     } catch (error) {
@@ -131,7 +147,9 @@ export default function Temp() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!id) return; // Prevent unnecessary API calls
+      console.log("fetching data")
+
+      // if (!id) return; // Prevent unnecessary API calls
 
       console.log("ID", id);
       console.log("Is Reel", isReel);
@@ -140,6 +158,7 @@ export default function Temp() {
         ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
         : `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/post_by_shortcode?shortcode=${id}`;
 
+    
       const options = {
         method: "GET",
         headers: {
@@ -149,12 +168,75 @@ export default function Temp() {
             "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
         },
       };
+      if(story){
+        const storyResponse = await fetch(
+          `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/user_id_by_username?username=${story}`,
+          options
+        );
+        if (!storyResponse.ok) {
+          console.error("Failed to fetch story data:", storyResponse.statusText);
+          return;
+        }
+        const storyData = await storyResponse.json();
+        console.log("Story Response Data:", storyData);
+        //wait for one second
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        //https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=25025320
+        const storyUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=${storyData.UserID}`;
+        const storyResponseData = await fetch(storyUrl, options);
+        const storyResult = await storyResponseData.json();
+        console.log("Story Result:", storyResult);
+
+        if (storyResult.length > 0) {
+          if (storyResult[0].video_versions) {
+            console.log("Story has video versions");
+            setVideoUrl(storyResult[0].video_versions[0].url);
+            setThumbnail(storyResult[0].image_versions2.candidates[0].url);
+            setIsReel(true);
+          
+          } else if (storyResult[0].image_versions2) {
+            console.log("Story has image versions");
+            setImageUrl(storyResult[0].image_versions2.candidates[0].url);
+            setIsReel(false);
+           
+          } else {
+            console.error("No valid media found in story result");
+            alert("No valid media found in the story.");
+          }
+        } else {
+          console.error("Empty story result");
+          alert("No story data found.");
+        }
+       // setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
+        setPogress(false);
+
+        
+        return;
+        
+      }
+      if(profilePic){
+        console.log("Profile Pic Fetching", profilePic);
+        const profilePicUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/profile_by_username?username=${profilePic}`;
+        const profilePicResponse = await fetch(profilePicUrl, options);
+        if (!profilePicResponse.ok) {
+          console.error("Failed to fetch profile picture data:", profilePicResponse.statusText);
+          return;
+        }
+        const profilePicData = await profilePicResponse.json();
+        console.log("Profile Pic Response Data:", profilePicData);
+        setFetchedId(profilePicData.pk); // Update fetchedId only after successful fetch
+        setImageUrl(profilePicData.hd_profile_pic_versions[0].url);
+        console.log('profile pic url',profilePicData.hd_profile_pic_versions[0].url)
+        setPogress(false);
+        return;
+      }  
+
 
       try {
         const response = await fetch(url, options);
         const result = await response.json();
         console.log("API Result:", result);
-        setId(null); // Reset ID after successful fetch
+        //setId(null); // Reset ID after successful fetch
         setPogress(false);
 
         if (isReel) {
@@ -174,6 +256,7 @@ export default function Temp() {
           setVideoUrl(result.video_versions?.[0]?.url || null);
           setIsReel(true)
           console.log("Video Url"+videoUrl);
+          return;
         }
         else {
           console.log("Its a post");
@@ -202,6 +285,7 @@ export default function Temp() {
                 ]);
               }
             }
+            return;
           } else {
             console.log(
               "Single Image:",
@@ -211,7 +295,8 @@ export default function Temp() {
           }
         }
 
-        setFetchedId(id); // Update fetchedId only after successful fetch
+       // setFetchedId(id); // Update fetchedId only after successful fetch
+       return;
       } catch (error) {
         console.error("API Fetch Error:", error);
         alert("Error fetching data. Please try again later.");
@@ -219,7 +304,7 @@ export default function Temp() {
     };
 
     fetchData();
-  }, [id, isReel]);
+  }, [id, isReel, profilePic, story, videoUrl]);
 
   return (
     <div>
@@ -227,7 +312,7 @@ export default function Temp() {
         <TopHero />
 
         <h1 className="md:text-[32px] text-[28px] text-white  md:text-start text-center mt-8 ">
-          Instagram Photo Downloader
+          Instagram Content Downloader
         </h1>
 
         <div className="flex md:flex-row flex-col md:gap-3 gap-5 mt-4">
@@ -440,6 +525,8 @@ export default function Temp() {
               <Image
                 src={imageUrl}
                 alt="image"
+                width={300}
+                height={375}
                
                 className="w-[300px] h-[375px] object-cover "
                 onLoad={() => setIsLoad(true)}

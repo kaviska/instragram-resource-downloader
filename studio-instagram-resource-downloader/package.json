@@ -15,6 +15,9 @@
     "sanity"
   ],
   "dependencies": {
+    "@google-cloud/translate": "^9.0.1",
+    "@sanity/client": "^6.28.4",
+    "@sanity/document-internationalization": "^3.3.1",
     "@sanity/vision": "^3.78.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

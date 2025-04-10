@@ -103,6 +103,8 @@ export default function Temp() {
     setPogress(true);
     setIsLoad(false);
     setStory(null);
+    setId(null);
+    setFetchedId(null);
     setProfilePic(null);
 
     try {
@@ -205,7 +207,7 @@ export default function Temp() {
           console.error("Empty story result");
           alert("No story data found.");
         }
-        setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
+       // setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
         setPogress(false);
 
         
@@ -234,7 +236,7 @@ export default function Temp() {
         const response = await fetch(url, options);
         const result = await response.json();
         console.log("API Result:", result);
-        setId(null); // Reset ID after successful fetch
+        //setId(null); // Reset ID after successful fetch
         setPogress(false);
 
         if (isReel) {
@@ -254,6 +256,7 @@ export default function Temp() {
           setVideoUrl(result.video_versions?.[0]?.url || null);
           setIsReel(true)
           console.log("Video Url"+videoUrl);
+          return;
         }
         else {
           console.log("Its a post");
@@ -282,6 +285,7 @@ export default function Temp() {
                 ]);
               }
             }
+            return;
           } else {
             console.log(
               "Single Image:",
@@ -291,7 +295,8 @@ export default function Temp() {
           }
         }
 
-        setFetchedId(id); // Update fetchedId only after successful fetch
+       // setFetchedId(id); // Update fetchedId only after successful fetch
+       return;
       } catch (error) {
         console.error("API Fetch Error:", error);
         alert("Error fetching data. Please try again later.");

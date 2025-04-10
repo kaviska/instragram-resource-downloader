@@ -2,6 +2,8 @@ const { chromium } = require('playwright');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const axios = require('axios');
+const {Translate} = require('@google-cloud/translate').v3;
+
 
 const proxies = [
     { server: 'http://38.154.227.167:5868', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
@@ -375,7 +377,29 @@ const fetchRequesthandler=async (req,res)=>{
       res.status(500).json({ error: 'Failed to fetch data' });
     }
 }
+const translateText = async (req, res) => {
+    const { text, targetLanguage } = req.body;
+
+    // Validate the input text and target language
+    if (!text || typeof text !== 'string' || text.trim() === '') {
+        return res.status(400).json({ error: 'Text is required for translation.' });
+    }
+    if (!targetLanguage || typeof targetLanguage !== 'string' || targetLanguage.trim() === '') {
+        return res.status(400).json({ error: 'Target language is required.' });
+    }
+
+    try {
+        console.log('Translating text:', text);
+        console.log('Target language:', targetLanguage);
+
+        // Translate the text
+        const [translation] = await Translate.translate(text, targetLanguage);
+        res.json({ translation });
+    } catch (error) {
+        console.error('Translation error:', error.message);
+        res.status(500).json({ error: 'Translation failed', details: error.message });
+    }
+};
 
 
-
-module.exports = { reelHandler, downloadReelHandler, imageHandler, downloadSingleImage ,fetchRequesthandler};
+module.exports = { reelHandler, downloadReelHandler,translateText, imageHandler, downloadSingleImage ,fetchRequesthandler};

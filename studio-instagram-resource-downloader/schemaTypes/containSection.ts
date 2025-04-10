@@ -10,6 +10,13 @@ export default {
       type: 'string',
     },
     {
+      name: 'language',
+      title: 'Language',
+      type: 'string',
+      readOnly: true, // Prevent manual editing
+      hidden: true,   // Hide from the UI
+    },
+    {
       name: 'metaTitle',
       title: 'Meta Title',
       type: 'string',
