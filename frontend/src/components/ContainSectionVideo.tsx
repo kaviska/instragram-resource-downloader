@@ -86,9 +86,9 @@ export default function ContainSection() {
     </div>
     <div className="mt-3">
         {/* {data.faq.length > 0 && <FAQ faq={data.faq} />} */}
-    {data.faq.length > 0 && (
-      <FAQ faq={data.faq} />
-    )}
+  {data.faq && data.faq.length > 0 && (
+        <FAQ faq={data.faq} />
+      )}
     </div>
   
  

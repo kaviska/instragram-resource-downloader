@@ -26,6 +26,8 @@ export default function Temp() {
   const [isLoad, setIsLoad] = useState<boolean>(false);
   const [story,setStory]=useState<string | null>(null);
   const [profilePic,setProfilePic]=useState<string | null>(null);
+    const [sendRequest, setSendRequest] = useState(1); // Track if the request is sent
+  
   
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
@@ -146,6 +148,9 @@ export default function Temp() {
   useEffect(() => {
     const fetchData = async () => {
       console.log("fetching data")
+
+      if(sendRequest === 1) return; // Prevent unnecessary API calls
+
 
       // if (!id) return; // Prevent unnecessary API calls
 
@@ -332,7 +337,7 @@ export default function Temp() {
     };
 
     fetchData();
-  }, [id, isReel, profilePic, story, videoUrl]);
+  }, [sendRequest]);
 
   return (
     <div>

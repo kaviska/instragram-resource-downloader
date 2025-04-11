@@ -24,7 +24,7 @@ export default function ContainSection() {
 
   useEffect(() => {
     async function fetchData() {
-      const query = `*[_type == "containSectionActiveStory"][0]`;
+      const query = `*[_type == "containSectionStory"][0]`;
       const result = await client.fetch(query);
       console.log(result);
       setData(result);
@@ -86,7 +86,7 @@ export default function ContainSection() {
     </div>
     <div className="mt-3">
         {/* {data.faq.length > 0 && <FAQ faq={data.faq} />} */}
-    {data.faq.length > 0 && (
+    {data.faq && data.faq.length > 0 && (
       <FAQ faq={data.faq} />
     )}
     </div>
