@@ -139,6 +139,9 @@ export default function Temp() {
         parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2] ; // Extract shortcode
       setIsReel(parts[0] === "reel" || parts[1] === "reel");
       setId(newId);
+
+      setSendRequest((prev) => prev + 1); // Increment request count
+
     } catch (error) {
       console.error("Invalid URL", error);
       alert("Invalid URL. Please enter a valid Instagram URL.");
