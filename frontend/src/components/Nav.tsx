@@ -18,7 +18,7 @@ export default function Nav() {
 
   return (
     <nav className=" ">
-      <div className="max-w-screen-xl mt-[-40px] flex flex-wrap items-center justify-between mx-auto p-3">
+      <div className="max-w-screen-xl mt-[-20px] flex flex-wrap items-center justify-between mx-auto p-3">
         <div>
           <Link
             href="/"
