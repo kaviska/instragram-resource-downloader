@@ -38,8 +38,8 @@ border: 1px solid rgba(255, 255, 255, 0.06);
 .goog-te-gadget-simple {
   background: #f8f9fa;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 8px 15px;
+  border-radius:4px;
+  padding:20px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -81,4 +81,26 @@ border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 6px 12px;
       font-size: 12px;
   }
+}
+.skiptranslate iframe {
+  display: none !important;
+  visibility: hidden !important;
+}
+#goog-gt-tt{
+  display: none !important;
+  visibility: hidden !important;
+}
+.container *:hover {
+ 
+  color: black !important;
+}
+.container font:hover {
+  color: black !important;
+}
+.container font{
+  color: black !important;
+}
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO{
+  display: none !important;
+  visibility: hidden !important;
 }
