@@ -17,31 +17,35 @@ export default defineConfig({
       supportedLanguages: [
         {id: 'en', title: 'English'},
         {id: 'es', title: 'Spanish'},
+        {id: 'zh', title: 'Chinese'},
+        {id: 'hi', title: 'Hindi'},
+        {id: 'ar', title: 'Arabic'},
+        {id: 'pt', title: 'Portuguese'},
+        {id: 'bn', title: 'Bengali'},
+        {id: 'ru', title: 'Russian'},
+        {id: 'ja', title: 'Japanese'},
+        {id: 'de', title: 'German'},
+        {id: 'ko', title: 'Korean'},
+        {id: 'fr', title: 'French'},
+        {id: 'tr', title: 'Turkish'},
+        {id: 'it', title: 'Italian'},
+        {id: 'vi', title: 'Vietnamese'},
+        {id: 'pl', title: 'Polish'},
+        {id: 'uk', title: 'Ukrainian'},
+        {id: 'nl', title: 'Dutch'},
+        {id: 'th', title: 'Thai'},
+        {id: 'si', title: 'Sinhala'}, // Sinhala added
       ],
-      schemaTypes: ['containSection'], // Add your schema type here
+      schemaTypes: ['test'], // Add your schema type here
     }),
   ],
 
-  document: {
-    actions: (prev) => [
-      ...prev,
-      autoTranslateAction,
-    ],
-  },
-
   // document: {
-  //   actions: (prev, context) => {
-  //     const originalDoc = context.documentId; // Use documentId instead of document
-  //     const targetLanguages = ['es', 'fr']; // Add your target languages here
-
-  //     const translationActions = targetLanguages.map((lang) => {
-  //       return autoTranslateAction(originalDoc, lang);
-  //     });
-
-  //     return [...prev, ...translationActions];
-  //   },
+  //   actions: (prev) => [
+  //     ...prev,
+  //     autoTranslateAction,
+  //   ],
   // },
-  
 
   schema: {
     types: schemaTypes,

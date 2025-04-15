@@ -6,31 +6,45 @@ import { client } from "../app/lib/sanity"; // Import the Sanity client
 import { PortableText } from "@portabletext/react";
 import { TypedObject } from "@portabletext/types";
 import FAQ from "./FAQ";
+import { useParams } from "next/navigation";
+
 // Removed unused import
 
 export default function ContainSection() {
-
-
   interface Data {
     body: unknown;
-  
+
     howToDownloadHeader: string;
-   
+
     faq: { question: string; answer: string }[];
-   
   }
 
   const [data, setData] = useState<Data | null>(null);
 
+  const params = useParams();
+  const slug = params.slug; // This will be the [slug] value from the URL
+
   useEffect(() => {
     async function fetchData() {
-      const query = `*[_type == "containSection"][0]`;
+      const query = `*[_type == "test"]`;
+      console.log("Slug:", slug); // Log the slug to see if it's being captured correctly
+
       const result = await client.fetch(query);
       console.log(result);
-      setData(result);
+
+      // Check if the slug language exists in the result
+      const languageData = result.find((item: { language: string }) => item.language === slug);
+
+      // If language data exists, set it; otherwise, set the English data
+      if (languageData) {
+        setData(languageData);
+      } else {
+        const englishData = result.find((item: { language: string }) => item.language === "en");
+        setData(englishData || null); // Fallback to null if no English data is found
+      }
     }
     fetchData();
-  }, []);
+  }, [slug]);
 
   if (!data)
     return (
@@ -68,34 +82,33 @@ export default function ContainSection() {
 
   return (
     <div>
-<div className="container max-w-4xl md:px-0 px-6 mx-auto">
-      <div className="prose max-w-none">
-        <PortableText 
-          value={data.body as TypedObject | TypedObject[]} 
-          components={{
-        block: {
-          h1: ({ children }) => <h1 className="text-3xl font-semibold">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-2xl font-medium">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-xl font-normal">{children}</h3>,
-          normal: ({ children }) => <p className="text-cm leading-relaxed">{children}</p>,
-        },
-          }}
-        />
+      <div className="container max-w-4xl md:px-0 px-6 mx-auto">
+        <div className="prose max-w-none">
+          <PortableText
+            value={data.body as TypedObject | TypedObject[]}
+            components={{
+              block: {
+                h1: ({ children }) => (
+                  <h1 className="text-3xl font-semibold">{children}</h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="text-2xl font-medium">{children}</h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-xl font-normal">{children}</h3>
+                ),
+                normal: ({ children }) => (
+                  <p className="text-cm leading-relaxed">{children}</p>
+                ),
+              },
+            }}
+          />
+        </div>
       </div>
-
-    </div>
-    <div className="mt-3">
+      <div className="mt-3">
         {/* {data.faq.length > 0 && <FAQ faq={data.faq} />} */}
-    {data.faq.length > 0 && (
-      <FAQ faq={data.faq} />
-    )}
+        {data.faq.length > 0 && <FAQ faq={data.faq} />}
+      </div>
     </div>
-  
- 
-    </div>
-    
-
-    
-    
   );
 }

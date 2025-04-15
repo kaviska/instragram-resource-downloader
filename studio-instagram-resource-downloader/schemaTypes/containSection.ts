@@ -26,7 +26,7 @@ export default {
       title: 'Meta Description',
       type: 'text',
       description: 'A short description of the blog post (Max: 160 words)',
-     
+    
     },
     {
       name:'body',

@@ -11,6 +11,7 @@ import containSectionCarousel from "./containSectionCarousel"; // Import the new
 import containSectionProfilePic from "./containSectionProfilePic";
 import containSectionActiveStory from "./containSectionActiveStory";
 import containSectionStory from "./containSectionStory";
+import test from "./test"; // Import the new schema for the test page`
 
 export const schemaTypes = [
     blog,
@@ -26,6 +27,7 @@ export const schemaTypes = [
     containSectionCarousel,
     containSectionProfilePic,
     containSectionActiveStory,
+    test
    // containSectionStory
     
 

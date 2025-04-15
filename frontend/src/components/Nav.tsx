@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../public/logo.png";
-import GoogleTranslate from "@/components/GoogleTranslate";
+import TranslateDropDown from "@/components/TranslateDropDown";
 
 export default function Nav() {
   const pathname = usePathname(); // Get current route
@@ -39,7 +39,7 @@ export default function Nav() {
             </h2>
           </Link>
           <div className="mt-5">
-            <GoogleTranslate />
+            <TranslateDropDown />
           </div>
         </div>
       </div>
