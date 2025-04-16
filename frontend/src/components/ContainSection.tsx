@@ -26,7 +26,7 @@ export default function ContainSection() {
 
   useEffect(() => {
     async function fetchData() {
-      const query = `*[_type == "test"]`;
+      const query = `*[_type == "containSection"]`;
       console.log("Slug:", slug); // Log the slug to see if it's being captured correctly
 
       const result = await client.fetch(query);
