@@ -6,6 +6,7 @@ import { client } from "../app/lib/sanity"; // Import the Sanity client
 import { PortableText } from "@portabletext/react";
 import { TypedObject } from "@portabletext/types";
 import FAQ from "./FAQ";
+import { useParams } from "next/navigation";
 // Removed unused import
 
 export default function ContainSection() {
@@ -22,15 +23,30 @@ export default function ContainSection() {
 
   const [data, setData] = useState<Data | null>(null);
 
+  const params = useParams();
+  const slug = params.slug; // This will be the [slug] value from the URL
+
   useEffect(() => {
     async function fetchData() {
-      const query = `*[_type == "containSectionReel"][0]`;
+      const query = `*[_type == "containSectionReel"]`;
+      console.log("Slug:", slug); // Log the slug to see if it's being captured correctly
+
       const result = await client.fetch(query);
       console.log(result);
-      setData(result);
+
+      // Check if the slug language exists in the result
+      const languageData = result.find((item: { language: string }) => item.language === slug);
+
+      // If language data exists, set it; otherwise, set the English data
+      if (languageData) {
+        setData(languageData);
+      } else {
+        const englishData = result.find((item: { language: string }) => item.language === "en");
+        setData(englishData || null); // Fallback to null if no English data is found
+      }
     }
     fetchData();
-  }, []);
+  }, [slug]);
 
   if (!data)
     return (

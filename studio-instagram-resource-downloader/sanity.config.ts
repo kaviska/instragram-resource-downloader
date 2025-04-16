@@ -36,7 +36,15 @@ export default defineConfig({
         {id: 'th', title: 'Thai'},
         {id: 'si', title: 'Sinhala'}, // Sinhala added
       ],
-      schemaTypes: ['test'], // Add your schema type here
+      schemaTypes: [
+        'containSection',
+        'containSectionReel',
+        'containSectionVideo',
+        'containSectionPhoto',
+        'containSectionCarousel',
+        'containSectionProfilePic',
+        'containSectionActiveStory',
+      ],
     }),
   ],
 
