@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
 import { client } from "../app/lib/sanity"; // Import the Sanity client
-// Removed unused import
-// Removed unused import
-// Removed unused import
 import { PortableText } from "@portabletext/react";
 import { TypedObject } from "@portabletext/types";
 import FAQ from "./FAQ";
 import { useParams } from "next/navigation";
 
-// Removed unused import
 
 export default function ContainSection() {
   interface Data {
     body: unknown;
-
     howToDownloadHeader: string;
-
     faq: { question: string; answer: string }[];
   }
 

@@ -18,21 +18,21 @@ export default function Nav() {
 
   return (
     <nav className=" ">
-      <div className="max-w-screen-xl  flex flex-wrap items-center justify-between mx-auto p-3">
+      <div className="  flex  items-center md:justify-between justify-center gap-12 mx-auto md:p-3 p-1">
         <div>
           <Link
             href="/"
             onClick={handleLogoClick}
             className="text-lg font-bold flex gap-3"
           >
-            <Image src={Logo} alt="logo" width={60} height={60} />
+            <Image src={Logo} alt="logo" width={60} height={60} className="w-[40px] md:w-[60px]" />
             <h2 className="text-[#DA08C9] md:text-[24px] text-[20px] mt-4">
               SaveFromInsta
             </h2>
           </Link>
         </div>
 
-        <div className="ml-auto flex gap-4 justify-center md:w-auto w-full items-center mb-4 ">
+        <div className="ml-auto flex gap-4 mt-3 justify-center md:w-auto w-full items-center mb-4 ">
           <Link href="/blogs" className="text-lg font-medium flex gap-3">
             <h2 className="text-[#000000] md:text-[24px] text-[20px] mt-4">
               Blogs
