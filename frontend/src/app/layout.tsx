@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import { client } from "@/app/lib/sanity"; // Import the Sanity client
+import { useParams } from "next/navigation";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,14 +33,18 @@ export default function RootLayout({
       "Download Instagram photos, videos, reels, and stories with SaveFromInsta. Fast, free, and easy-to-use Instagram video downloader with HD quality and no watermarks. No sign-up required.",
   });
 
-  useEffect(() => {
+ const params = useParams();
+   const slug = params.slug; // This will be the [slug] value from the URL
+   console.log("slug from layout",slug)
+
+   useEffect(() => {
     async function fetchMetaData() {
       let query = "";
       let queryParams = {};
       if (pathname === "/") {
         query = `*[_type == "containSection"][0]{metaTitle, metaDescription}`;
       }
-
+  
       if (pathname === "/instagram-video-downloader") {
         query = `*[_type == "containSectionVideo"][0]{metaTitle, metaDescription}`;
       } else if (pathname === "/instagram-photo-downloader") {
@@ -49,24 +55,45 @@ export default function RootLayout({
         query = `*[_type == "containSectionCarousel"][0]{metaTitle, metaDescription}`;
       } else if (pathname.startsWith("/blog/")) {
         const slug = pathname.split("/blog/")[1];
-        query = `*[_type == "blog" && slug.current == $slug][0]{metaTitle, metaDescription}`;
+        query = `*[_type == "blog" && slug.current == $slug][0]{metaTitle, metaDescription, language}`;
         queryParams = { slug };
       }
-
+  
       if (query) {
         const result = await client.fetch(query, queryParams);
+        console.log("Meta data result:", result); // Log the result to see what you get
+  
         if (result) {
-          setMetaData({
-            title: result.metaTitle || metaData.title,
-            description: result.metaDescription || metaData.description,
-          });
+          // Check if the slug language exists in the result
+          const languageData = Array.isArray(result)
+            ? result.find((item: { language: string }) => item.language === slug)
+            : null;
+  
+          console.log("Language data:", languageData);
+  
+          // If language data exists, set it; otherwise, set the English data
+          if (languageData) {
+            setMetaData((prevMetaData) => ({
+              title: languageData.metaTitle || prevMetaData.title,
+              description: languageData.metaDescription || prevMetaData.description,
+            }));
+            console.log("Language data found:", languageData);
+          } else {
+            const englishData = Array.isArray(result)
+              ? result.find((item: { language: string }) => item.language === "en")
+              : result;
+  
+            setMetaData((prevMetaData) => ({
+              title: englishData?.metaTitle || prevMetaData.title,
+              description: englishData?.metaDescription || prevMetaData.description,
+            }));
+          }
         }
       }
     }
-
+  
     fetchMetaData();
-  }, [pathname]);
-
+  }, [pathname, slug]);
   return (
     <html lang="en">
       <head>
