@@ -7,9 +7,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 import { useEffect, useState } from "react";
-import { client } from "@/app/lib/sanity"; // Import the Sanity client
-import { useParams } from "next/navigation";
-
+import { client } from "@/app/lib/sanity";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +21,9 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const pathname = usePathname();
   const [metaData, setMetaData] = useState({
     title: "Instagram Downloader - Download Instagram Reels, Posts, Videos & Carousels",
@@ -33,67 +31,49 @@ export default function RootLayout({
       "Download Instagram photos, videos, reels, and stories with SaveFromInsta. Fast, free, and easy-to-use Instagram video downloader with HD quality and no watermarks. No sign-up required.",
   });
 
- const params = useParams();
-   const slug = params.slug; // This will be the [slug] value from the URL
-   console.log("slug from layout",slug)
-
-   useEffect(() => {
+  useEffect(() => {
     async function fetchMetaData() {
+      const pathParts = pathname.split("/").filter(Boolean);
+      const language = pathParts[0]; // e.g., "pt", "en"
+      const pageSlug = pathParts.slice(1).join("/");
+
       let query = "";
-      let queryParams = {};
-      if (pathname === "/") {
-        query = `*[_type == "containSection"][0]{metaTitle, metaDescription}`;
-      }
-  
-      if (pathname === "/instagram-video-downloader") {
-        query = `*[_type == "containSectionVideo"][0]{metaTitle, metaDescription}`;
-      } else if (pathname === "/instagram-photo-downloader") {
-        query = `*[_type == "containSectionPhoto"][0]{metaTitle, metaDescription}`;
-      } else if (pathname === "/instagram-reel-downloader") {
-        query = `*[_type == "containSectionReel"][0]{metaTitle, metaDescription}`;
-      } else if (pathname === "/instagram-carousel-downloader") {
-        query = `*[_type == "containSectionCarousel"][0]{metaTitle, metaDescription}`;
-      } else if (pathname.startsWith("/blog/")) {
-        const slug = pathname.split("/blog/")[1];
+      let queryParams: any = { language };
+
+      if (!pageSlug) {
+        query = `*[_type == "containSection" && language == $language][0]{metaTitle, metaDescription}`;
+      } else if (pageSlug === "instagram-video-downloader") {
+        query = `*[_type == "containSectionVideo" && language == $language][0]{metaTitle, metaDescription}`;
+      } else if (pageSlug === "instagram-photo-downloader") {
+        query = `*[_type == "containSectionPhoto" && language == $language][0]{metaTitle, metaDescription}`;
+      } else if (pageSlug === "instagram-reel-downloader") {
+        query = `*[_type == "containSectionReel" && language == $language][0]{metaTitle, metaDescription}`;
+      } else if (pageSlug === "instagram-carousel-downloader") {
+        query = `*[_type == "containSectionCarousel" && language == $language][0]{metaTitle, metaDescription}`;
+      } else if (pageSlug.startsWith("blog/")) {
+        const slug = pageSlug.split("blog/")[1];
         query = `*[_type == "blog" && slug.current == $slug][0]{metaTitle, metaDescription, language}`;
         queryParams = { slug };
       }
-  
+
       if (query) {
-        const result = await client.fetch(query, queryParams);
-        console.log("Meta data result:", result); // Log the result to see what you get
-  
-        if (result) {
-          // Check if the slug language exists in the result
-          const languageData = Array.isArray(result)
-            ? result.find((item: { language: string }) => item.language === slug)
-            : null;
-  
-          console.log("Language data:", languageData);
-  
-          // If language data exists, set it; otherwise, set the English data
-          if (languageData) {
-            setMetaData((prevMetaData) => ({
-              title: languageData.metaTitle || prevMetaData.title,
-              description: languageData.metaDescription || prevMetaData.description,
-            }));
-            console.log("Language data found:", languageData);
-          } else {
-            const englishData = Array.isArray(result)
-              ? result.find((item: { language: string }) => item.language === "en")
-              : result;
-  
-            setMetaData((prevMetaData) => ({
-              title: englishData?.metaTitle || prevMetaData.title,
-              description: englishData?.metaDescription || prevMetaData.description,
+        try {
+          const result = await client.fetch(query, queryParams);
+          if (result) {
+            setMetaData((prev) => ({
+              title: result.metaTitle || prev.title,
+              description: result.metaDescription || prev.description,
             }));
           }
+        } catch (err) {
+          console.error("Error fetching meta:", err);
         }
       }
     }
-  
+
     fetchMetaData();
-  }, [pathname, slug]);
+  }, [pathname]);
+
   return (
     <html lang="en">
       <head>
@@ -104,7 +84,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-iphone-retina-120x120.png" />
         <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-ipad-retina-152x152.png" />
 
-        {/* <!-- Google tag (gtag.js) --> */}
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-Y7SQ80LMCJ"
           strategy="afterInteractive"
@@ -114,14 +94,11 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
             gtag('config', 'G-Y7SQ80LMCJ');
           `}
         </Script>
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Nav />
         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
         <Footer />
