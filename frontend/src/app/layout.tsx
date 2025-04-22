@@ -38,7 +38,7 @@ export default function RootLayout({
       const pageSlug = pathParts.slice(1).join("/");
 
       let query = "";
-      let queryParams: any = { language };
+      let queryParams: Record<string, string> = { language };
 
       if (!pageSlug) {
         query = `*[_type == "containSection" && language == $language][0]{metaTitle, metaDescription}`;
