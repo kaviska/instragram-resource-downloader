@@ -32,6 +32,7 @@ export default function ContainSection() {
       // If language data exists, set it; otherwise, set the English data
       if (languageData) {
         setData(languageData);
+        console.log("Language data found:", languageData);
       } else {
         const englishData = result.find((item: { language: string }) => item.language === "en");
         setData(englishData || null); // Fallback to null if no English data is found
@@ -101,7 +102,7 @@ export default function ContainSection() {
       </div>
       <div className="mt-3">
         {/* {data.faq.length > 0 && <FAQ faq={data.faq} />} */}
-        {data.faq.length > 0 && <FAQ faq={data.faq} />}
+        {data.faq && data.faq.length > 0 && <FAQ faq={data.faq} />}
       </div>
     </div>
   );
