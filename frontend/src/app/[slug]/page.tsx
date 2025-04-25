@@ -15,6 +15,8 @@ import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null); // Ref for the preview section
+
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
@@ -33,6 +35,11 @@ export default function Temp() {
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Track button disabled state
 
+  useEffect(() => {
+    if (videoUrl || imageUrl || multipleImages) {
+      previewRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [videoUrl, imageUrl, multipleImages]);
   const handlePaste = () => {
     navigator.clipboard
       .readText()
@@ -376,7 +383,7 @@ export default function Temp() {
 
 
 
-      <div className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
+      <div ref={previewRef} className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
       {videoUrl && (
         <div className="mt-12 flex justify-center">
           <div className="flex flex-col   items-center shadow-sm pb-4">
