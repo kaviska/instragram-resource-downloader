@@ -32,6 +32,7 @@ export default function Main() {
   const [copiedText, setCopiedText] = useState(""); // Store copied text
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Track button disabled state
+  const [apiData,setApiData]=useState<any>(null); // Track API data
 
   useEffect(() => {
     if (videoUrl || imageUrl || multipleImages) {
@@ -249,6 +250,7 @@ export default function Main() {
         const response = await fetch(url, options);
         const result = await response.json();
         console.log("API Result:", result);
+        setApiData(result); // Store API data in state
         //setId(null); // Reset ID after successful fetch
         setPogress(false);
 
@@ -403,16 +405,16 @@ export default function Main() {
         className="container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto"
       >
        
-        {videoUrl && (
+                {videoUrl && (
           <div className="mt-12 flex justify-center">
-            <div className="flex flex-col   items-center shadow-sm pb-4">
+            <div className="flex flex-col items-center shadow-lg rounded-lg bg-white overflow-hidden pb-4">
               {thumbnail && (
                 <div className="relative">
                   {isLoad === false && (
                     <div>
                       <div
                         role="status"
-                        className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                        className="flex w-[300px] h-[375px] object-cover bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
                       >
                         <svg
                           className="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -428,12 +430,27 @@ export default function Main() {
                       </div>
                     </div>
                   )}
+                    {apiData?.user && (
+                  <div className="flex items-center gap-3 mb-3">
+                    <Image
+                      src={apiData.user.profile_pic_url}
+                      alt={apiData.user.username}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                    <div>
+                      <p className="font-semibold">{apiData.user.full_name}</p>
+                      <p className="text-sm text-gray-500">@{apiData.user.username}</p>
+                    </div>
+                  </div>
+                )}
                   <Image
                     src={thumbnail}
                     alt="Thumbnail"
                     width={300}
                     height={375}
-                    className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px] "
+                    className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px]"
                     onLoad={() => setIsLoad(true)}
                   />
                   <MovieCreationIcon
@@ -447,120 +464,152 @@ export default function Main() {
                   />
                 </div>
               )}
-
+        
+              {/* Card Footer */}
+              <div className="py-4 px-0 max-w-[300px] text-[16">
+              
+              {apiData?.caption?.text && (
+                <p className="text-gray-700 mb-3  text-sm">{apiData.caption.text}</p>
+              )}
+              <div className="flex justify-between gap-4 text-gray-600 text-sm">
+                {apiData?.like_count && (
+                  <span>
+                    <strong>{apiData.like_count}</strong> Likes
+                  </span>
+                )}
+                {apiData?.comment_count && (
+                  <span>
+                    <strong>{apiData.comment_count}</strong> Comments
+                  </span>
+                )}
+              </div>
+            </div>
+      
               <a
                 href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
                   videoUrl
                 )}`}
                 download="video.mp4"
-                className="bg-blue-500 px-3 text-white py-[10px] rounded-[10px] my-4 justify-self-center inline-block"
+                className="bg-blue-500 px-3 text-white py-[10px] mt-4 rounded-[10px] justify-self-center inline-block"
               >
                 Download Video
               </a>
             </div>
           </div>
         )}
-
+        
         {multipleImages && (
-            <div className="">
-                    <button 
+          <div>
+              <button 
                     className="px-3 py-2 rounded-[8px] text-white bg-amber-500 hover:bg-amber-600 transition-colors duration-200" 
                     onClick={zipDownloader}
                     >
                     Download AS Zip
                     </button>
- <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
-           
-           {multipleImages.map((image, index) => (
-             <div key={index} className="flex flex-col items-center pb-4">
-               <div className="relative  shadow-sm ">
-                 {isLoad === false && (
-                   <div>
-                     <div
-                       role="status"
-                       className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                     >
-                       <svg
-                         className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                         aria-hidden="true"
-                         xmlns="http://www.w3.org/2000/svg"
-                         fill="currentColor"
-                         viewBox="0 0 16 20"
-                       >
-                         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                         <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                       </svg>
-                       <span className="sr-only">Loading...</span>
-                     </div>
-                   </div>
-                 )}
-                 <Image
-                   src={image.url}
-                   alt="image"
-                   width={300}
-                   height={375}
-                   className="w-[300px] h-[375px] object-cover"
-                   onLoad={() => setIsLoad(true)}
-                 />
+                    <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
+            {multipleImages.map((image, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center shadow-lg rounded-lg bg-white overflow-hidden pb-4"
+              >
+                
+                <div className="relative">
+                {apiData?.user && (
+                  <div className="flex items-center gap-3 mb-3">
+                    <Image
+                      src={apiData.user.profile_pic_url}
+                      alt={apiData.user.username}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                    <div>
+                      <p className="font-semibold">{apiData.user.full_name}</p>
+                      <p className="text-sm text-gray-500">@{apiData.user.username}</p>
+                    </div>
+                  </div>
+                )}
+                  <Image
+                    src={image.url}
+                    alt="image"
+                    width={300}
+                    height={375}
+                    className="w-[300px] h-[375px] object-cover"
+                    onLoad={() => setIsLoad(true)}
+                  />
                  <ViewCarouselIcon
-                   style={{
-                     color: "white",
-                     fontSize: 24,
-                     position: "absolute",
-                     top: 10,
-                     right: 10,
-                   }}
-                 />
-               </div>
-
-               <button
-                 onClick={() => {
-                   if (image.isVideo && image.videoUrl) {
-                     handleStreamDownload(image.videoUrl, "video.mp4");
-                   } else {
-                     handleStreamDownload(image.url, "picture.jpg");
-                   }
-                   dissableButton();
-                 }}
-                 className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
-                   isButtonDisabled
-                     ? "bg-gray-400 cursor-not-allowed"
-                     : "bg-blue-500"
-                 }`}
-                 disabled={isButtonDisabled}
-               >
-                 {image.isVideo ? "Download Video" : "Download Image"}
-               </button>
-             </div>
-           ))}
-           <hr />
-         </div>
+                  style={{
+                    color: "white",
+                    fontSize: 24,
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                  }}
+                />
+                </div>
+        
+           
+                {/* Card Footer */}
+                <div className="py-4 px-0 max-w-[300px] text-[16">
+              
+              {apiData?.caption?.text && (
+                <p className="text-gray-700 mb-3  text-sm">{apiData.caption.text}</p>
+              )}
+              <div className="flex justify-between gap-4 text-gray-600 text-sm">
+                {apiData?.like_count && (
+                  <span>
+                    <strong>{apiData.like_count}</strong> Likes
+                  </span>
+                )}
+                {apiData?.comment_count && (
+                  <span>
+                    <strong>{apiData.comment_count}</strong> Comments
+                  </span>
+                )}
+              </div>
             </div>
-            
-         
+      
+                <button
+                  onClick={() => {
+                    if (image.isVideo && image.videoUrl) {
+                      handleStreamDownload(image.videoUrl, "video.mp4");
+                    } else {
+                      handleStreamDownload(image.url, "picture.jpg");
+                    }
+                    dissableButton();
+                  }}
+                  className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
+                    isButtonDisabled
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500"
+                  }`}
+                  disabled={isButtonDisabled}
+                >
+                  {image.isVideo ? "Download Video" : "Download Image"}
+                </button>
+              </div>
+            ))}
+          </div>
+          </div>
+        
         )}
-
+        
         {imageUrl && (
-          <div className="mt-12 justify-center">
-            <div className="flex flex-col items-center  pb-4">
-              <div className="relative bg-slate-500">
-                {isLoad === false && (
-                  <div>
-                    <div
-                      role="status"
-                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                    >
-                      <svg
-                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 16 20"
-                      >
-                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                      </svg>
-                      <span className="sr-only">Loading...</span>
+          <div className="mt-12 flex justify-center">
+            <div className="flex flex-col items-center shadow-lg rounded-lg bg-white overflow-hidden pb-4">
+              <div className="relative">
+              {apiData?.user && (
+                  <div className="flex items-center gap-3 mb-3">
+                    <Image
+                      src={apiData.user.profile_pic_url}
+                      alt={apiData.user.username}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                    <div>
+                      <p className="font-semibold">{apiData.user.full_name}</p>
+                      <p className="text-sm text-gray-500">@{apiData.user.username}</p>
                     </div>
                   </div>
                 )}
@@ -569,7 +618,7 @@ export default function Main() {
                   alt="image"
                   width={300}
                   height={375}
-                  className="w-[300px] h-[375px] object-cover "
+                  className="w-[300px] h-[375px] object-cover"
                   onLoad={() => setIsLoad(true)}
                 />
                 <InsertPhotoIcon
@@ -582,22 +631,41 @@ export default function Main() {
                   }}
                 />
               </div>
-              <div className="shadow-sm w-[300px] flex justify-center ">
-                <button
-                  onClick={() => {
-                    handleStreamDownload(imageUrl, "picture.jpg");
-                    dissableButton();
-                  }}
-                  className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
-                    isButtonDisabled
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-500"
-                  }`}
-                  disabled={isButtonDisabled}
-                >
-                  Download Image
-                </button>
+        
+              {/* Card Footer */}
+              <div className="py-4 px-0 max-w-[300px] text-[16">
+              
+                {apiData?.caption?.text && (
+                  <p className="text-gray-700 mb-3  text-sm">{apiData.caption.text}</p>
+                )}
+                <div className="flex justify-between gap-4 text-gray-600 text-sm">
+                  {apiData?.like_count && (
+                    <span>
+                      <strong>{apiData.like_count}</strong> Likes
+                    </span>
+                  )}
+                  {apiData?.comment_count && (
+                    <span>
+                      <strong>{apiData.comment_count}</strong> Comments
+                    </span>
+                  )}
+                </div>
               </div>
+        
+              <button
+                onClick={() => {
+                  handleStreamDownload(imageUrl, "picture.jpg");
+                  dissableButton();
+                }}
+                className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
+                  isButtonDisabled
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500"
+                }`}
+                disabled={isButtonDisabled}
+              >
+                Download Image
+              </button>
             </div>
           </div>
         )}

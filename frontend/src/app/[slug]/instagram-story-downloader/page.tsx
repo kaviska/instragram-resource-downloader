@@ -373,6 +373,9 @@ export default function Temp() {
     document.body.removeChild(form);
 };
 
+
+
+
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">
@@ -440,7 +443,8 @@ export default function Temp() {
       <div ref={previewRef} className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
       {videoUrl && (
         <div className="mt-12 flex justify-center">
-          <div className="flex flex-col   items-center shadow-sm pb-4">
+          <div className="flex flex-col   items-center shadow-[0_1px_2px_0_rgba(42,42,42,0.23)]
+ pb-4">
             {thumbnail && (
                 <div className="relative">
                {isLoad === false && (
@@ -498,6 +502,8 @@ export default function Temp() {
 
       {multipleImages && (
         <div>
+          
+
            <button 
                     className="px-3 py-2 rounded-[8px] text-white bg-amber-500 hover:bg-amber-600 transition-colors duration-200" 
                     onClick={zipDownloader}
@@ -506,8 +512,9 @@ export default function Temp() {
                     </button>
           <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
           {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center pb-4">
-              <div className="relative  shadow-sm ">
+            <div key={index} className="flex flex-col items-center  shadow-[0_1px_2px_0_rgba(42,42,42,0.23)] pb-4">
+              <div className="relative 
+ ">
                 {isLoad === false && (
                   <div>
                     <div
@@ -617,7 +624,8 @@ export default function Temp() {
                 }}
               />
             </div>
-            <div className="shadow-sm w-[300px] flex justify-center ">
+            <div className="shadow-[0_1px_2px_0_rgba(42,42,42,0.23)]
+ w-[300px] flex justify-center ">
             <button
               onClick={() => {
                 handleStreamDownload(imageUrl, "picture.jpg");

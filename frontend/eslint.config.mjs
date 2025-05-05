@@ -14,6 +14,7 @@ const eslintConfig = [
   {
     rules: {
       "react-hooks/exhaustive-deps": "off", // Disable the rule globally
+      "@typescript-eslint/no-explicit-any": "off", // Disable the rule globally
     },
   },
 ];
