@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const axios = require('axios');
 const {Translate} = require('@google-cloud/translate').v3;
+const archiver = require('archiver');
 
 
 const proxies = [
