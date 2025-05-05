@@ -11,6 +11,8 @@ app.options('*', cors()); // enable pre-flight request handling
 
 
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 const Resource = require('./routes/Resource');
 app.use('/api/', Resource);

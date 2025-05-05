@@ -346,7 +346,7 @@ export default function Main() {
           downloadLink.href = URL.createObjectURL(blob);
           downloadLink.download = 'content.zip';
           downloadLink.click();
-          URL.revokeObjectURL(downloadLink.href); // Clean up the object URL
+          //URL.revokeObjectURL(downloadLink.href); // Clean up the object URL
       } catch (error) {
           console.error('Error downloading zip:', error);
           alert('Failed to download zip. Please try again.');

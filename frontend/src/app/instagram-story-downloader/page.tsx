@@ -350,34 +350,31 @@ export default function Temp() {
     fetchData();
   }, [sendRequest]);
 
-  const zipDownloader=async ()=>{
-    try {
-      const response = await fetch('https://api.savefrominsta.app/api/download-zip', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          links: multipleImages ? multipleImages.map((image) =>
-            image.isVideo && image.videoUrl ? image.videoUrl : image.url
-          ) : [],
-        }),
-      });
+  const zipDownloader = () => {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://api.savefrominsta.app/api/download-zip';
+    form.style.display = 'none';
 
-      if (!response.ok) {
-        throw new Error('Failed to send links to the backend');
-      }
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'links';
+    input.value = JSON.stringify(
+        multipleImages
+            ? multipleImages.map((image) =>
+                  image.isVideo && image.videoUrl ? image.videoUrl : image.url
+              )
+            : []
+    );
 
-      const blob = await response.blob();
-      const downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = 'images.zip';
-      downloadLink.click();
-    } catch (error) {
-      console.error('Error downloading zip:', error);
-      alert('Failed to download zip. Please try again.');
-    }
-  }
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+};
+
+
+
 
   return (
     <div>
@@ -504,6 +501,8 @@ export default function Temp() {
 
       {multipleImages && (
         <div>
+          
+
            <button 
                     className="px-3 py-2 rounded-[8px] text-white bg-amber-500 hover:bg-amber-600 transition-colors duration-200" 
                     onClick={zipDownloader}
