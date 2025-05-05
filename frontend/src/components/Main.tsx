@@ -320,35 +320,38 @@ export default function Main() {
     fetchData();
   }, [sendRequest]);
 
-  const zipDownloader=async ()=>{
-    try {
-      const response = await fetch('https://api.savefrominsta.app/api/download-zip', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          links: multipleImages ? multipleImages.map((image) =>
-            image.isVideo && image.videoUrl ? image.videoUrl : image.url
-          ) : [],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send links to the backend');
+   const zipDownloader = async () => {
+      try {
+          const response = await fetch('https://api.savefrominsta.app/api/download-zip', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  links: multipleImages
+                      ? multipleImages.map((image) =>
+                            image.isVideo && image.videoUrl ? image.videoUrl : image.url
+                        )
+                      : [],
+              }),
+          });
+  
+          if (!response.ok) {
+              throw new Error('Failed to send links to the backend');
+          }
+  
+          // Create a blob from the response and trigger the download
+          const blob = await response.blob();
+          const downloadLink = document.createElement('a');
+          downloadLink.href = URL.createObjectURL(blob);
+          downloadLink.download = 'content.zip';
+          downloadLink.click();
+          URL.revokeObjectURL(downloadLink.href); // Clean up the object URL
+      } catch (error) {
+          console.error('Error downloading zip:', error);
+          alert('Failed to download zip. Please try again.');
       }
-
-      const blob = await response.blob();
-      const downloadLink = document.createElement('a');
-      downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = 'images.zip';
-      downloadLink.click();
-    } catch (error) {
-      console.error('Error downloading zip:', error);
-      alert('Failed to download zip. Please try again.');
-    }
-  }
-
+  };
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">

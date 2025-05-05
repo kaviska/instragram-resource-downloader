@@ -416,7 +416,8 @@ const downloadAsZip = async (req, res) => {
         const archive = archiver('zip', { zlib: { level: 9 } });
 
         // Set the response headers for downloading the ZIP file
-        res.attachment('images.zip');
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', 'attachment; filename="content.zip"');
         archive.pipe(res);
 
         // Fetch each image and append it to the ZIP archive
