@@ -470,7 +470,12 @@ export default function Main() {
 
         {multipleImages && (
             <div className="">
-                  <button className="px-3 py-2 rounded-[8px] text-white bg-amber-500" onClick={zipDownloader}>Download AS Zip</button>
+                    <button 
+                    className="px-3 py-2 rounded-[8px] text-white bg-amber-500 hover:bg-amber-600 transition-colors duration-200" 
+                    onClick={zipDownloader}
+                    >
+                    Download AS Zip
+                    </button>
  <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
            
            {multipleImages.map((image, index) => (
