@@ -1,20 +1,16 @@
 "use client";
-// specila file do not chnage
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import GetAppIcon from "@mui/icons-material/GetApp";
-
 import CircularProgress from "@mui/material/CircularProgress";
 import TopHero from "@/components/TopHero";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import ClearIcon from "@mui/icons-material/Clear";
-import ContainSectionActiveStory from "@/components/ContainSectionActiveStory";
-
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 
-export default function Temp() {
+export default function Main() {
   const inputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLDivElement>(null); // Ref for the preview section
 
@@ -23,25 +19,26 @@ export default function Temp() {
   const [id, setId] = useState<string | null>(null);
   const [fetchedId, setFetchedId] = useState<string | null>(null); // Prevent duplicate API calls
   const [isReel, setIsReel] = useState<boolean>(false);
-  const [multipleImages, setMultipleImages] = useState<{ url: string; isVideo: boolean; videoUrl?: string }[] | null>(null);
+  const [multipleImages, setMultipleImages] = useState<
+    { url: string; isVideo: boolean; videoUrl?: string }[] | null
+  >(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pogress, setPogress] = useState<boolean>(false);
   const [isLoad, setIsLoad] = useState<boolean>(false);
-  const [story,setStory]=useState<string | null>(null);
-  const [profilePic,setProfilePic]=useState<string | null>(null);
-    const [sendRequest, setSendRequest] = useState(1); // Track if the request is sent
-  
-  
+  const [story, setStory] = useState<string | null>(null);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [sendRequest, setSendRequest] = useState(1); // Track if the request is sent
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Track button disabled state
 
   useEffect(() => {
-      if (videoUrl || imageUrl || multipleImages) {
-        previewRef.current?.scrollIntoView({ behavior: "smooth" });
-      }
-    }, [videoUrl, imageUrl, multipleImages]);
+    if (videoUrl || imageUrl || multipleImages) {
+      previewRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [videoUrl, imageUrl, multipleImages]);
+
   const handlePaste = () => {
     navigator.clipboard
       .readText()
@@ -96,7 +93,7 @@ export default function Temp() {
 
   const sendData = () => {
     const data = inputRef.current?.value.trim();
-    setIsPasted(true)
+    setIsPasted(true);
     if (!data) return;
 
     //check url is valid or not url should have www.instagram.com
@@ -113,6 +110,8 @@ export default function Temp() {
     setPogress(true);
     setIsLoad(false);
     setStory(null);
+    setId(null);
+    setFetchedId(null);
     setProfilePic(null);
 
     try {
@@ -121,35 +120,33 @@ export default function Temp() {
       for (let i = 0; i < parts.length; i++) {
         console.log("Parts:", parts[i]);
       }
-      if(parts[0] === "stories"){
+      if (parts[0] === "stories") {
         setStory(parts[1]);
       }
       if (parts.length === 1) {
         setProfilePic(parts[0]);
         console.log("Profile Pic", parts[0]);
-       
       }
 
       // else if (
-       
+
       //   (parts[0] !== "p" &&
       //     parts[0] !== "reel" &&
       //     parts[1] !== "p" &&
       //     parts[1] !== "reel") &&
-      //   parts[0] !== "stories" 
-       
+      //   parts[0] !== "stories"
+
       // ) {
       //   alert("Invalid URL. Please enter a valid Instagram URL.");
       //   return;
       // }
 
       const newId =
-        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2] ; // Extract shortcode
+        parts[0] === "p" || parts[0] === "reel" ? parts[1] : parts[2]; // Extract shortcode
       setIsReel(parts[0] === "reel" || parts[1] === "reel");
       setId(newId);
 
       setSendRequest((prev) => prev + 1); // Increment request count
-
     } catch (error) {
       console.error("Invalid URL", error);
       alert("Invalid URL. Please enter a valid Instagram URL.");
@@ -158,10 +155,9 @@ export default function Temp() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("fetching data")
+      console.log("fetching data");
 
-      if(sendRequest === 1) return; // Prevent unnecessary API calls
-
+      if (sendRequest === 1) return; // Prevent unnecessary API calls
 
       // if (!id) return; // Prevent unnecessary API calls
 
@@ -172,7 +168,6 @@ export default function Temp() {
         ? `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/reel_by_shortcode?shortcode=${id}`
         : `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/post_by_shortcode?shortcode=${id}`;
 
-    
       const options = {
         method: "GET",
         headers: {
@@ -182,13 +177,16 @@ export default function Temp() {
             "instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com",
         },
       };
-      if(story){
+      if (story) {
         const storyResponse = await fetch(
           `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/user_id_by_username?username=${story}`,
           options
         );
         if (!storyResponse.ok) {
-          console.error("Failed to fetch story data:", storyResponse.statusText);
+          console.error(
+            "Failed to fetch story data:",
+            storyResponse.statusText
+          );
           return;
         }
         const storyData = await storyResponse.json();
@@ -207,12 +205,10 @@ export default function Temp() {
             setVideoUrl(storyResult[0].video_versions[0].url);
             setThumbnail(storyResult[0].image_versions2.candidates[0].url);
             setIsReel(true);
-          
           } else if (storyResult[0].image_versions2) {
             console.log("Story has image versions");
             setImageUrl(storyResult[0].image_versions2.candidates[0].url);
             setIsReel(false);
-           
           } else {
             console.error("No valid media found in story result");
             alert("No valid media found in the story.");
@@ -221,69 +217,39 @@ export default function Temp() {
           console.error("Empty story result");
           alert("No story data found.");
         }
-        setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
+        // setFetchedId(storyResult[0].id); // Update fetchedId only after successful fetch
         setPogress(false);
 
-        
         return;
-        
       }
-      if(profilePic){
-        const storyResponse = await fetch(
-          `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/user_id_by_username?username=${profilePic}`,
-          options
-        );
-        if (!storyResponse.ok) {
-          console.error("Failed to fetch story data:", storyResponse.statusText);
+      if (profilePic) {
+        console.log("Profile Pic Fetching", profilePic);
+        const profilePicUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/profile_by_username?username=${profilePic}`;
+        const profilePicResponse = await fetch(profilePicUrl, options);
+        if (!profilePicResponse.ok) {
+          console.error(
+            "Failed to fetch profile picture data:",
+            profilePicResponse.statusText
+          );
           return;
         }
-        const storyData = await storyResponse.json();
-        console.log("Story Response Data:", storyData);
-        //wait for one second
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        //https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=25025320
-        const storyUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/stories_by_user_id?user_id=${storyData.UserID}`;
-        const storyResponseData = await fetch(storyUrl, options);
-        const storyResult = await storyResponseData.json();
-        console.log("Story Result:", storyResult);
-
-        for (let i = 0; i < storyResult.length; i++) {
-          const media = storyResult[i];
-          if (media.media_type === 2 && media.video_versions) {
-            // If it's a video
-            setMultipleImages((prevImages) => [
-              ...(prevImages || []),
-              {
-          url: media.image_versions2.candidates[0].url,
-          isVideo: true,
-          videoUrl: media.video_versions[0].url,
-              },
-            ]);
-          } else if (media.media_type === 1 && media.image_versions2) {
-            // If it's an image
-            setMultipleImages((prevImages) => [
-              ...(prevImages || []),
-              {
-          url: media.image_versions2.candidates[0].url,
-          isVideo: false,
-              },
-            ]);
-          } else {
-            console.error("Unsupported media type:", media.media_type);
-          }
-        }
-        setPogress(false)
-           
- return;
-       
-      }  
-
+        const profilePicData = await profilePicResponse.json();
+        console.log("Profile Pic Response Data:", profilePicData);
+        setFetchedId(profilePicData.pk); // Update fetchedId only after successful fetch
+        setImageUrl(profilePicData.hd_profile_pic_versions[0].url);
+        console.log(
+          "profile pic url",
+          profilePicData.hd_profile_pic_versions[0].url
+        );
+        setPogress(false);
+        return;
+      }
 
       try {
         const response = await fetch(url, options);
         const result = await response.json();
         console.log("API Result:", result);
-        setId(null); // Reset ID after successful fetch
+        //setId(null); // Reset ID after successful fetch
         setPogress(false);
 
         if (isReel) {
@@ -291,20 +257,20 @@ export default function Temp() {
             result.image_versions2?.additional_candidates?.first_frame?.url ||
               null
           );
-         
+
           setVideoUrl(result.video_versions?.[0]?.url || null);
-          console.log("Video Url"+videoUrl);
-        } 
-        if(result.has_audio !== undefined && result.has_audio === true){
+          console.log("Video Url" + videoUrl);
+        }
+        if (result.has_audio !== undefined && result.has_audio === true) {
           setThumbnail(
             result.image_versions2?.additional_candidates?.first_frame?.url ||
               null
           );
           setVideoUrl(result.video_versions?.[0]?.url || null);
-          setIsReel(true)
-          console.log("Video Url"+videoUrl);
-        }
-        else {
+          setIsReel(true);
+          console.log("Video Url" + videoUrl);
+          return;
+        } else {
           console.log("Its a post");
           if (result.carousel_media) {
             for (let i = 0; i < result.carousel_media.length; i++) {
@@ -316,7 +282,8 @@ export default function Temp() {
                 setMultipleImages((prevImages) => [
                   ...(prevImages || []),
                   {
-                    url: result.carousel_media[i].image_versions2.candidates[0].url,
+                    url: result.carousel_media[i].image_versions2.candidates[0]
+                      .url,
                     isVideo: true,
                     videoUrl: result.carousel_media[i].video_versions[0].url,
                   },
@@ -325,12 +292,14 @@ export default function Temp() {
                 setMultipleImages((prevImages) => [
                   ...(prevImages || []),
                   {
-                    url: result.carousel_media[i].image_versions2.candidates[0].url,
+                    url: result.carousel_media[i].image_versions2.candidates[0]
+                      .url,
                     isVideo: false,
                   },
                 ]);
               }
             }
+            return;
           } else {
             console.log(
               "Single Image:",
@@ -340,7 +309,8 @@ export default function Temp() {
           }
         }
 
-        setFetchedId(id); // Update fetchedId only after successful fetch
+        // setFetchedId(id); // Update fetchedId only after successful fetch
+        return;
       } catch (error) {
         console.error("API Fetch Error:", error);
         alert("Error fetching data. Please try again later.");
@@ -349,6 +319,35 @@ export default function Temp() {
 
     fetchData();
   }, [sendRequest]);
+
+  const zipDownloader=async ()=>{
+    try {
+      const response = await fetch('https://api.savefrominsta.app/api/download-zip', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          links: multipleImages ? multipleImages.map((image) =>
+            image.isVideo && image.videoUrl ? image.videoUrl : image.url
+          ) : [],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send links to the backend');
+      }
+
+      const blob = await response.blob();
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = 'images.zip';
+      downloadLink.click();
+    } catch (error) {
+      console.error('Error downloading zip:', error);
+      alert('Failed to download zip. Please try again.');
+    }
+  }
 
   return (
     <div>
@@ -406,78 +405,147 @@ export default function Temp() {
         </div>
       </div>
 
-
-
-
-
-
-
-
-
-      <div ref={previewRef} className='container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto'>
-      {videoUrl && (
-        <div className="mt-12 flex justify-center">
-          <div className="flex flex-col   items-center shadow-sm pb-4">
-            {thumbnail && (
+      <div
+        ref={previewRef}
+        className="container md:max-w-7xl max-w-4xl px-6 py-10 mx-auto"
+      >
+       
+        {videoUrl && (
+          <div className="mt-12 flex justify-center">
+            <div className="flex flex-col   items-center shadow-sm pb-4">
+              {thumbnail && (
                 <div className="relative">
-               {isLoad === false && (
-                  <div>
-                    <div
-                      role="status"
-                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                    >
-                      <svg
-                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 16 20"
+                  {isLoad === false && (
+                    <div>
+                      <div
+                        role="status"
+                        className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
                       >
-                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                      </svg>
-                      <span className="sr-only">Loading...</span>
+                        <svg
+                          className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 16 20"
+                        >
+                          <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                          <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                        </svg>
+                        <span className="sr-only">Loading...</span>
+                      </div>
                     </div>
-                  </div>
-                )}
-                <Image
-                  src={thumbnail}
-                  alt="Thumbnail"
-                  width={300}
-                  height={375}
-                  className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px] "
-                  onLoad={() => setIsLoad(true)}
-                />
-                <MovieCreationIcon
-                  style={{
-                  color: "white",
-                  fontSize: 24,
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  }}
-                />
+                  )}
+                  <Image
+                    src={thumbnail}
+                    alt="Thumbnail"
+                    width={300}
+                    height={375}
+                    className="min-h-[300px] min-w-[375px] max-w-[320px] object-cover max-h-[400px] "
+                    onLoad={() => setIsLoad(true)}
+                  />
+                  <MovieCreationIcon
+                    style={{
+                      color: "white",
+                      fontSize: 24,
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                    }}
+                  />
                 </div>
-            )}
+              )}
 
-            <a
-              href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
-                videoUrl
-              )}`}
-              download="video.mp4"
-              className="bg-blue-500 px-3 text-white py-[10px] rounded-[10px] my-4 justify-self-center inline-block"
-            >
-              Download Video
-            </a>
+              <a
+                href={`https://api.savefrominsta.app/api/download-reel?url=${encodeURIComponent(
+                  videoUrl
+                )}`}
+                download="video.mp4"
+                className="bg-blue-500 px-3 text-white py-[10px] rounded-[10px] my-4 justify-self-center inline-block"
+              >
+                Download Video
+              </a>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {multipleImages && (
-        <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
-          {multipleImages.map((image, index) => (
-            <div key={index} className="flex flex-col items-center pb-4">
-              <div className="relative  shadow-sm ">
+        {multipleImages && (
+            <div className="">
+                  <button className="px-3 py-2 rounded-[8px] text-white bg-amber-500" onClick={zipDownloader}>Download AS Zip</button>
+ <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
+           
+           {multipleImages.map((image, index) => (
+             <div key={index} className="flex flex-col items-center pb-4">
+               <div className="relative  shadow-sm ">
+                 {isLoad === false && (
+                   <div>
+                     <div
+                       role="status"
+                       className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
+                     >
+                       <svg
+                         className="w-10 h-10 text-gray-200 dark:text-gray-600"
+                         aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor"
+                         viewBox="0 0 16 20"
+                       >
+                         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                         <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
+                       </svg>
+                       <span className="sr-only">Loading...</span>
+                     </div>
+                   </div>
+                 )}
+                 <Image
+                   src={image.url}
+                   alt="image"
+                   width={300}
+                   height={375}
+                   className="w-[300px] h-[375px] object-cover"
+                   onLoad={() => setIsLoad(true)}
+                 />
+                 <ViewCarouselIcon
+                   style={{
+                     color: "white",
+                     fontSize: 24,
+                     position: "absolute",
+                     top: 10,
+                     right: 10,
+                   }}
+                 />
+               </div>
+
+               <button
+                 onClick={() => {
+                   if (image.isVideo && image.videoUrl) {
+                     handleStreamDownload(image.videoUrl, "video.mp4");
+                   } else {
+                     handleStreamDownload(image.url, "picture.jpg");
+                   }
+                   dissableButton();
+                 }}
+                 className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
+                   isButtonDisabled
+                     ? "bg-gray-400 cursor-not-allowed"
+                     : "bg-blue-500"
+                 }`}
+                 disabled={isButtonDisabled}
+               >
+                 {image.isVideo ? "Download Video" : "Download Image"}
+               </button>
+             </div>
+           ))}
+           <hr />
+         </div>
+            </div>
+            
+         
+        )}
+
+        {imageUrl && (
+          <div className="mt-12 justify-center">
+            <div className="flex flex-col items-center  pb-4">
+              <div className="relative bg-slate-500">
                 {isLoad === false && (
                   <div>
                     <div
@@ -499,14 +567,14 @@ export default function Temp() {
                   </div>
                 )}
                 <Image
-                  src={image.url}
+                  src={imageUrl}
                   alt="image"
                   width={300}
                   height={375}
-                  className="w-[300px] h-[375px] object-cover"
+                  className="w-[300px] h-[375px] object-cover "
                   onLoad={() => setIsLoad(true)}
                 />
-                <ViewCarouselIcon
+                <InsertPhotoIcon
                   style={{
                     color: "white",
                     fontSize: 24,
@@ -516,109 +584,26 @@ export default function Temp() {
                   }}
                 />
               </div>
-             
-
+              <div className="shadow-sm w-[300px] flex justify-center ">
                 <button
-                onClick={() => {
-                  if (image.isVideo && image.videoUrl) {
-                  handleStreamDownload(image.videoUrl, "video.mp4");
-                  } else {
-                  handleStreamDownload(image.url, "picture.jpg");
-                  }
-                  dissableButton();
-                }}
-                className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] mt-4 inline-block ${
-                  isButtonDisabled
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500"
-                }`}
-                disabled={isButtonDisabled}
+                  onClick={() => {
+                    handleStreamDownload(imageUrl, "picture.jpg");
+                    dissableButton();
+                  }}
+                  className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
+                    isButtonDisabled
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500"
+                  }`}
+                  disabled={isButtonDisabled}
                 >
-                {image.isVideo ? "Download Video" : "Download Image"}
+                  Download Image
                 </button>
+              </div>
             </div>
-          ))}
-          <hr />
-        </div>
-      )}
-
-      {imageUrl && (
-        <div className="mt-12 justify-center">
-          <div className="flex flex-col items-center  pb-4">
-            <div className="relative bg-slate-500">
-            {isLoad === false && (
-                  <div>
-                    <div
-                      role="status"
-                      className="flex w-[300px] h-[375px] object-cover   bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700"
-                    >
-                      <svg
-                        className="w-10 h-10 text-gray-200 dark:text-gray-600"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 16 20"
-                      >
-                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z" />
-                      </svg>
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  </div>
-                )}
-              <Image
-                src={imageUrl}
-                alt="image"
-                width={300}
-                height={375}
-               
-                className="w-[300px] h-[375px] object-cover "
-                onLoad={() => setIsLoad(true)}
-              />
-              <InsertPhotoIcon
-                style={{
-                  color: "white",
-                  fontSize: 24,
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                }}
-              />
-            </div>
-            <div className="shadow-sm w-[300px] flex justify-center ">
-            <button
-              onClick={() => {
-                handleStreamDownload(imageUrl, "picture.jpg");
-                dissableButton();
-              }}
-              className={`bg-blue-500 text-white px-3 py-[10px] rounded-[10px] my-4 inline-block ${
-                isButtonDisabled
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-500"
-              }`}
-              disabled={isButtonDisabled}
-            >
-              Download Image
-            </button>
-            </div>
-
-            
           </div>
-        </div>
-      )}
-
+        )}
       </div>
-
-     
-
-
-
-
-
-
-
-
-      <ContainSectionActiveStory />
     </div>
   );
 }

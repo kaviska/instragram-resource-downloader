@@ -402,4 +402,39 @@ const translateText = async (req, res) => {
 };
 
 
-module.exports = { reelHandler, downloadReelHandler,translateText, imageHandler, downloadSingleImage ,fetchRequesthandler};
+
+const downloadAsZip = async (req, res) => {
+    const { links } = req.body;
+
+    if (!links || !Array.isArray(links)) {
+        return res.status(400).json({ error: 'Invalid request body. "links" must be an array.' });
+    }
+
+    try {
+        // Create a ZIP archive
+        const archive = archiver('zip', { zlib: { level: 9 } });
+
+        // Set the response headers for downloading the ZIP file
+        res.attachment('images.zip');
+        archive.pipe(res);
+
+        // Fetch each image and append it to the ZIP archive
+        for (const [index, link] of links.entries()) {
+            try {
+                const response = await axios.get(link, { responseType: 'arraybuffer' });
+                const fileExtension = link.includes('.mp4') ? '.mp4' : '.jpg';
+                archive.append(response.data, { name: `file-${index + 1}${fileExtension}` });
+            } catch (error) {
+                console.error(`Failed to fetch image from ${link}:`, error.message);
+            }
+        }
+
+        // Finalize the archive
+        archive.finalize();
+    } catch (error) {
+        console.error('Error creating ZIP file:', error.message);
+        res.status(500).json({ error: 'Failed to create ZIP file', details: error.message });
+    }
+};
+
+module.exports = { reelHandler, downloadReelHandler, translateText, imageHandler, downloadSingleImage, fetchRequesthandler, downloadAsZip };
