@@ -1,6 +1,7 @@
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
     return (
@@ -8,24 +9,24 @@ export default function Footer() {
             <div className="container mx-auto px-4">
                 <div className="flex md:flex-row flex-col justify-center items-center md:justify-between">
                     <span>
-                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/privacy-policy">
+                        <Link href="/privacy-policy" className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                             Privacy Policy
-                        </a>
+                        </Link>
                     </span>
                     <span>
-                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/contact-us">
+                        <Link href="/contact-us" className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                             Contact Us
-                        </a>
+                        </Link>
                     </span>
                     <span>
-                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/terms-of-service">
+                        <Link href="/terms-of-service" className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
                             Terms of Service
-                        </a>
+                        </Link>
                     </span>
                     <span>
-                        <a className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm" href="/blogs">
-                           Blog
-                        </a>
+                        <Link href="/blogs" className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm">
+                            Blog
+                        </Link>
                     </span>
                 </div>
 
