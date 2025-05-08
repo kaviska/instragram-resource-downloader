@@ -433,6 +433,17 @@ export default function Main() {
     form.submit();
     document.body.removeChild(form);
 };
+const clearPreview = () => {
+  setVideoUrl(null);
+  setMultipleImages(null);
+  setImageUrl(null);
+  setCopiedText("");
+  setIsPasted(false);
+  if (inputRef.current) {
+    inputRef.current.value = "";
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
   return (
     <div>
       <div className="bg-[#DA08C9] flex flex-col justify-center items-center px-5 py-16 ">
@@ -495,7 +506,17 @@ export default function Main() {
       >
        
                 {videoUrl && (
-          <div className="mt-12 flex justify-center">
+                  <div>
+                      <button
+                className="px-3 py-2 rounded-[8px] text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+                onClick={() => {
+                  clearPreview()
+                 
+                }}
+              >
+               Download Another Content
+              </button>
+              <div className="mt-12 flex justify-center">
             <div className="flex flex-col items-center shadow-lg rounded-lg bg-white overflow-hidden pb-4">
               {thumbnail && (
                 <div className="relative">
@@ -585,16 +606,32 @@ export default function Main() {
               </a>
             </div>
           </div>
+                  </div>
+                  
+         
         )}
         
         {multipleImages && (
           <div>
-              <button 
+            <div className="flex gap-3">
+              <button
+                className="px-3 py-2 rounded-[8px] text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+                onClick={() => {
+                  clearPreview()
+                 
+                }}
+              >
+               Download Another Content
+              </button>
+            
+            <button 
                     className="px-3 py-2 rounded-[8px] text-white bg-amber-500 hover:bg-amber-600 transition-colors duration-200" 
                     onClick={zipDownloader}
                     >
                     Download AS Zip
                     </button>
+            </div>
+            
                     <div className="mt-12 flex gap-x-3 gap-y-12 flex-wrap justify-center">
             {multipleImages.map((image, index) => (
               <div
@@ -684,7 +721,17 @@ export default function Main() {
         )}
         
         {imageUrl && (
-          <div className="mt-12 flex justify-center">
+         <div>
+            <button
+                className="px-3 py-2 rounded-[8px] text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+                onClick={() => {
+                  clearPreview()
+                 
+                }}
+              >
+               Download Another Content
+              </button>
+              <div className="mt-12 flex justify-center">
             <div className="flex flex-col items-center shadow-lg rounded-lg bg-white overflow-hidden pb-4">
               <div className="relative">
               {apiData?.user && (
@@ -757,6 +804,9 @@ export default function Main() {
               </button>
             </div>
           </div>
+
+         </div>
+          
         )}
       </div>
       <Toast
