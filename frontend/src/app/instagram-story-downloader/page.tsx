@@ -13,6 +13,13 @@ import ContainSectionActiveStory from "@/components/ContainSectionActiveStory";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import Toast from "@/components/Toast";
+
+type ToastState = {
+  open: boolean;
+  message: string;
+  type: "success" | "error" | "info" | "warning";
+};
 
 export default function Temp() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +38,11 @@ export default function Temp() {
   const [profilePic,setProfilePic]=useState<string | null>(null);
     const [sendRequest, setSendRequest] = useState(1); // Track if the request is sent
   
+    const [toast, setToast] = useState<ToastState>({
+      open: false,
+      message: "",
+      type: "success",
+    });
   
 
   const [copiedText, setCopiedText] = useState(""); // Store copied text
@@ -189,7 +201,22 @@ export default function Temp() {
         );
         if (!storyResponse.ok) {
           console.error("Failed to fetch story data:", storyResponse.statusText);
+          if (storyResponse.status === 429) {
+            setToast({
+              open: true,
+              message: "Our system is facing high traffic. Please try again later.",
+              type: "error",
+            });
+          }
+          else {
+            setToast({
+              open: true,
+              message: "Your URL is not public url,please try again with public url.",
+              type: "error",
+            });
+          }
           return;
+
         }
         const storyData = await storyResponse.json();
         console.log("Story Response Data:", storyData);
@@ -285,6 +312,24 @@ export default function Temp() {
         console.log("API Result:", result);
         setId(null); // Reset ID after successful fetch
         setPogress(false);
+
+        if (!response.ok) {
+          console.error("Failed to fetch data:", response.statusText);
+          if (response.status === 429) {
+            setToast({
+              open: true,
+              message: "Our system is facing high traffic. Please try again later.",
+              type: "error",
+            });
+          } else {
+            setToast({
+              open: true,
+              message: "Your URL is not public url,please try again with public url.",
+              type: "error",
+            });
+          }
+          return;
+        }
 
         if (isReel) {
           setThumbnail(
@@ -646,7 +691,12 @@ export default function Temp() {
 
       </div>
 
-     
+      <Toast
+        open={toast.open}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ ...toast, open: false })}
+      />
 
 
 

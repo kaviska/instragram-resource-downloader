@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { reelHandler,downloadReelHandler,imageHandler,downloadSingleImage,translateText,fetchRequesthandler, downloadAsZip } = require('../controller/ResourceHandler');
+const { SaveUrlHandler,reelHandler,downloadReelHandler,imageHandler,downloadSingleImage,translateText,fetchRequesthandler, downloadAsZip } = require('../controller/ResourceHandler');
 
 router.post('/reel', reelHandler);
 router.get('/download-reel', downloadReelHandler);
@@ -9,6 +9,7 @@ router.post('/image',imageHandler);
 router.post('/translate',translateText)
 router.get('/send-request/:type/:id', fetchRequesthandler);
 router.post('/download-zip', downloadAsZip);
+router.post('/save-url',SaveUrlHandler)
 
 
 module.exports = router;

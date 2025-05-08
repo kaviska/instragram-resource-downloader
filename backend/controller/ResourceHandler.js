@@ -5,6 +5,8 @@ const axios = require('axios');
 const {Translate} = require('@google-cloud/translate').v3;
 const archiver = require('archiver');
 
+const path = require('path');
+
 
 const proxies = [
     { server: 'http://38.154.227.167:5868', username: 'guclrdex', password: 'kdtu4nfd8x7k' },
@@ -443,4 +445,44 @@ const downloadAsZip = async (req, res) => {
 
 
 
-module.exports = { reelHandler, downloadReelHandler, translateText, imageHandler, downloadSingleImage, fetchRequesthandler, downloadAsZip };
+// Function to save a failed URL to a text file
+const saveFailedUrl = (url) => {
+  const filePath = path.join('./failed-urls.txt'); // Define the file path
+  fs.appendFile(filePath, `${url}\n`, (err) => {
+    if (err) {
+      console.error('Failed to save URL:', err);
+    } else {
+      console.log('URL saved successfully:', url);
+    }
+  });
+};
+
+// Example handler to demonstrate saving a failed URL
+const SaveUrlHandler = async (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ message: 'URL is required' });
+  }
+
+  try {
+    // Simulate a failed request
+    const isRequestFailed = true; // Replace with actual logic
+    if (isRequestFailed) {
+      console.error('Request failed for URL:', url);
+      saveFailedUrl(url); // Save the failed URL
+      return res.status(500).json({ message: 'Failed to process the URL' });
+    }
+
+    res.status(200).json({ message: 'URL processed successfully' });
+  } catch (error) {
+    console.error('Error processing URL:', error);
+    saveFailedUrl(url); // Save the failed URL in case of an error
+    res.status(500).json({ message: 'An error occurred', details: error.message });
+  }
+};
+
+
+
+
+module.exports = {  saveFailedUrl, SaveUrlHandler,reelHandler, downloadReelHandler, translateText, imageHandler, downloadSingleImage, fetchRequesthandler, downloadAsZip };

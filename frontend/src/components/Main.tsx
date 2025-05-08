@@ -9,6 +9,13 @@ import ClearIcon from "@mui/icons-material/Clear";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import Toast from "@/components/Toast";
+
+type ToastState = {
+  open: boolean;
+  message: string;
+  type: "success" | "error" | "info" | "warning";
+};
 
 export default function Main() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,6 +40,13 @@ export default function Main() {
   const [isPasted, setIsPasted] = useState(false); // Track if something is pasted
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Track button disabled state
   const [apiData,setApiData]=useState<any>(null); // Track API data
+  const [toast, setToast] = useState<ToastState>({
+    open: false,
+    message: "",
+    type: "success",
+  });
+  const [urlForInput, setUrlForInput] = useState<string | null>(null); // Track URL for input
+
 
   useEffect(() => {
     if (videoUrl || imageUrl || multipleImages) {
@@ -67,7 +81,7 @@ export default function Main() {
     setIsButtonDisabled(true);
     setTimeout(() => {
       setIsButtonDisabled(false);
-    }, 3000);
+    }, 5000);
   };
 
   const handleStreamDownload = async (videoUrl: string, filename: string) => {
@@ -92,6 +106,8 @@ export default function Main() {
     }
   };
 
+;
+
   const sendData = () => {
     const data = inputRef.current?.value.trim();
     setIsPasted(true);
@@ -102,6 +118,7 @@ export default function Main() {
       alert("Invalid URL. Please enter a valid Instagram URL.");
       return;
     }
+    setUrlForInput(data); // Set the URL for input
 
     setVideoUrl(null);
     setThumbnail(null);
@@ -188,6 +205,23 @@ export default function Main() {
             "Failed to fetch story data:",
             storyResponse.statusText
           );
+          if (storyResponse.status === 429) {
+            setToast({
+              open: true,
+              message: "Our system is facing high traffic. Please try again later.",
+              type: "error",
+            });
+          }
+          else {
+            setToast({
+              open: true,
+              message: "Your URL is not public url,please try again with public url.",
+              type: "error",
+            });
+          }
+
+
+
           return;
         }
         const storyData = await storyResponse.json();
@@ -228,10 +262,37 @@ export default function Main() {
         const profilePicUrl = `https://instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com/profile_by_username?username=${profilePic}`;
         const profilePicResponse = await fetch(profilePicUrl, options);
         if (!profilePicResponse.ok) {
+          const errorData = await profilePicResponse.json();
           console.error(
             "Failed to fetch profile picture data:",
             profilePicResponse.statusText
           );
+
+          if (errorData?.error === "no cookie available for use") {
+            setToast({
+              open: true,
+              message: "Our system is facing high traffic. Please try again later.",
+              type: "error",
+            });
+          }
+          else {
+            setToast({
+              open: true,
+              message: "Your URL is not public url,please try again with public url.",
+              type: "error",
+            });
+          }
+
+          await fetch('http://localhost:5000/api/save-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: urlForInput }),
+          });
+
+          
+
           return;
         }
         const profilePicData = await profilePicResponse.json();
@@ -253,6 +314,34 @@ export default function Main() {
         setApiData(result); // Store API data in state
         //setId(null); // Reset ID after successful fetch
         setPogress(false);
+
+        if (!response.ok) {
+          console.error("Failed to fetch data:", response.statusText);
+          if (result?.error === "no cookie available for use") {
+            setToast({
+              open: true,
+              message: "Our system is facing high traffic. Please try again later.",
+              type: "error",
+            });
+          }
+          else {
+            setToast({
+              open: true,
+              message: "Your URL is not public url,please try again with public url.",
+              type: "error",
+            });
+          }
+
+          await fetch('http://localhost:5000/api/save-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: urlForInput }),
+          });
+
+          return;
+        }
 
         if (isReel) {
           setThumbnail(
@@ -670,6 +759,14 @@ export default function Main() {
           </div>
         )}
       </div>
+      <Toast
+        open={toast.open}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ ...toast, open: false })}
+      />
     </div>
+
+    
   );
 }
