@@ -283,7 +283,7 @@ export default function Main() {
             });
           }
 
-          await fetch('http://localhost:5000/api/save-url', {
+          await fetch('https://api.savefrominsta.app/api/save-url', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -332,7 +332,7 @@ export default function Main() {
             });
           }
 
-          await fetch('http://localhost:5000/api/save-url', {
+          await fetch('https://api.savefrominsta.app/api/save-url', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
